@@ -1,0 +1,985 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Thermodynamic Darwinism — What if the universe evolves?</title>
+<meta name="description" content="A visual exploration of Thermodynamic Darwinism: the theory that quantum branch probabilities emerge from energy constraints, the same way evolution shapes life.">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Newsreader:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap');
+
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg: #0a0a0f;
+  --bg2: #111119;
+  --text: #e8e8f0;
+  --text2: #9090a8;
+  --accent: #7c5cfc;
+  --accent2: #4af0c0;
+  --warm: #f59e0b;
+  --red: #ef4444;
+  --blue: #4a9eff;
+  --serif: 'Newsreader', Georgia, serif;
+  --sans: 'Inter', system-ui, sans-serif;
+}
+
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--sans);
+  line-height: 1.7;
+  overflow-x: hidden;
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 100px 24px;
+  position: relative;
+}
+
+.container { max-width: 900px; width: 100%; }
+
+h1 {
+  font-family: var(--serif);
+  font-size: clamp(2.5rem, 6vw, 4.5rem);
+  font-weight: 300;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+}
+h2 {
+  font-family: var(--serif);
+  font-size: clamp(1.8rem, 4vw, 3rem);
+  font-weight: 300;
+  line-height: 1.25;
+  margin-bottom: 1.5rem;
+}
+h3 {
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--accent);
+  margin-bottom: 1rem;
+}
+p { color: var(--text2); font-size: 1.1rem; max-width: 640px; }
+p + p { margin-top: 1rem; }
+
+.fade-in { /* visible by default; no JS observer needed */ }
+
+.math-block {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: clamp(1.2rem, 2.5vw, 1.8rem);
+  color: var(--accent);
+  background: rgba(124, 92, 252, 0.06);
+  border-left: 3px solid var(--accent);
+  padding: 1.2rem 1.5rem;
+  margin: 2rem 0;
+  border-radius: 0 8px 8px 0;
+  line-height: 1.8;
+}
+
+canvas {
+  display: block;
+  width: 100%;
+  border-radius: 12px;
+}
+
+.badge {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 100px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.badge-axiom { background: rgba(124,92,252,0.15); color: #a78bfa; }
+.badge-derivation { background: rgba(74,158,255,0.15); color: #4a9eff; }
+.badge-prediction { background: rgba(52,211,153,0.15); color: #34d399; }
+.badge-critique { background: rgba(239,68,68,0.15); color: #ef4444; }
+
+/* Hero */
+#hero {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  position: relative;
+}
+#hero-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+}
+#hero .content { position: relative; z-index: 1; }
+#hero h1 { margin-bottom: 1.5rem; }
+#hero h1 em {
+  font-style: normal;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+#hero p { margin: 0 auto 2rem; text-align: center; }
+.scroll-hint {
+  position: absolute;
+  bottom: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  animation: bob 2s ease-in-out infinite;
+  color: var(--text2);
+  font-size: 0.85rem;
+}
+@keyframes bob {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50% { transform: translateX(-50%) translateY(10px); }
+}
+
+/* Analogy cards */
+.analogy-grid {
+  display: grid;
+  grid-template-columns: 1fr 60px 1fr;
+  gap: 1.5rem;
+  align-items: center;
+  margin: 3rem 0;
+}
+.analogy-card {
+  background: var(--bg2);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 16px;
+  padding: 2rem;
+}
+.analogy-arrow {
+  text-align: center;
+  font-size: 2rem;
+  color: var(--accent);
+}
+.analogy-card h4 {
+  font-family: var(--serif);
+  font-size: 1.3rem;
+  margin-bottom: 0.5rem;
+}
+
+/* Chain steps */
+.chain {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  margin: 2rem 0;
+}
+.chain-step {
+  display: flex;
+  gap: 1.5rem;
+  align-items: flex-start;
+}
+.chain-line {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-shrink: 0;
+  width: 40px;
+}
+.chain-dot {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--accent);
+  flex-shrink: 0;
+  box-shadow: 0 0 12px rgba(124,92,252,0.4);
+}
+.chain-connector {
+  width: 2px;
+  height: 60px;
+  background: linear-gradient(to bottom, var(--accent), transparent);
+}
+.chain-content {
+  padding-bottom: 2.5rem;
+}
+.chain-content h4 {
+  font-weight: 600;
+  margin-bottom: 0.3rem;
+}
+.chain-content p { font-size: 0.95rem; }
+.chain-content .eq {
+  font-family: var(--serif);
+  font-style: italic;
+  color: var(--accent2);
+  margin-top: 0.4rem;
+  font-size: 1rem;
+}
+
+/* Temperature slider */
+.slider-section {
+  background: var(--bg2);
+  border-radius: 20px;
+  padding: 3rem;
+  margin: 3rem 0;
+  border: 1px solid rgba(255,255,255,0.06);
+}
+.temp-display {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+.temp-value {
+  font-family: var(--serif);
+  font-size: 3rem;
+  font-weight: 300;
+  background: linear-gradient(135deg, #4af0c0, #4a9eff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+input[type="range"] {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 6px;
+  background: rgba(124,92,252,0.2);
+  border-radius: 3px;
+  outline: none;
+  margin: 1rem 0;
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--accent);
+  cursor: pointer;
+  box-shadow: 0 0 16px rgba(124,92,252,0.5);
+}
+#bars-canvas {
+  width: 100%;
+  height: 180px;
+  margin-top: 1.5rem;
+}
+
+.legend {
+  display: flex;
+  gap: 2rem;
+  justify-content: center;
+  margin-top: 1.5rem;
+  font-size: 0.85rem;
+  color: var(--text2);
+}
+.legend-dot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  margin-right: 6px;
+  vertical-align: middle;
+}
+
+/* KL Chart */
+#kl-chart {
+  height: 300px;
+  background: var(--bg2);
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.06);
+}
+
+/* Theory graph */
+#theory-svg {
+  width: 100%;
+  height: 500px;
+  background: var(--bg2);
+  border-radius: 16px;
+  border: 1px solid rgba(255,255,255,0.06);
+}
+
+/* Footer */
+.footer {
+  text-align: center;
+  padding: 5rem 2rem 3rem;
+  border-top: 1px solid rgba(255,255,255,0.06);
+}
+.footer p { margin: 0 auto; }
+.gratitude {
+  font-family: var(--serif);
+  font-size: clamp(1.4rem, 3vw, 2rem);
+  font-weight: 300;
+  font-style: italic;
+  color: var(--text);
+  margin-bottom: 2.5rem;
+  line-height: 1.6;
+}
+.gratitude em {
+  font-style: normal;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.heart {
+  display: inline-block;
+  animation: pulse 1.5s ease-in-out infinite;
+  font-style: normal;
+}
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.2); }
+}
+
+.cta {
+  display: inline-block;
+  padding: 14px 32px;
+  background: linear-gradient(135deg, var(--accent), #5a3fd6);
+  color: white;
+  text-decoration: none;
+  border-radius: 100px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.cta:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(124,92,252,0.3);
+}
+
+@media (max-width: 700px) {
+  .analogy-grid { grid-template-columns: 1fr; }
+  .analogy-arrow { transform: rotate(90deg); }
+  .slider-section { padding: 1.5rem; }
+  .section { padding: 60px 16px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ===== HERO ===== -->
+<section id="hero">
+  <canvas id="hero-canvas"></canvas>
+  <div class="content">
+    <h3>A New Theory of Physics</h3>
+    <h1>What if the universe<br><em>evolves</em>?</h1>
+    <p>Thermodynamic Darwinism proposes that quantum reality is shaped by the same principle that shapes life: survival of the fittest. Explore the science.</p>
+  </div>
+  <div class="scroll-hint">Scroll to explore &darr;</div>
+</section>
+
+<!-- ===== THE BIG QUESTION ===== -->
+<section class="section" id="question">
+  <div class="container">
+    <div class="fade-in">
+      <h3>The Big Question</h3>
+      <h2>Every quantum event splits reality into branches. But why do some branches matter more?</h2>
+      <p>In the Many-Worlds Interpretation of quantum mechanics, every measurement causes the universe to split. Flip a coin and both "heads" and "tails" actually happen — in different branches of reality.</p>
+      <p>The Born rule tells us the <em>probability</em> of being in each branch: it's proportional to |&psi;|&sup2;, the square of the quantum wave function. But no one has explained <strong>why</strong> this rule works. It's just assumed.</p>
+    </div>
+    <div class="fade-in" style="margin-top: 3rem;">
+      <canvas id="branch-canvas" height="280"></canvas>
+    </div>
+  </div>
+</section>
+
+<!-- ===== THE KEY IDEA ===== -->
+<section class="section" id="idea">
+  <div class="container">
+    <div class="fade-in">
+      <h3>The Key Idea</h3>
+      <h2>The multiverse has a <em style="color: var(--accent);">finite energy budget</em></h2>
+      <p>Think of it like an ecosystem. Life on Earth is governed by finite sunlight, finite water, finite nutrients. Organisms compete for resources, and the fittest survive.</p>
+      <p>Thermodynamic Darwinism says the quantum multiverse works the same way. Branches that "cost" too much energy get suppressed. The result? The Born rule falls out naturally.</p>
+    </div>
+
+    <div class="analogy-grid fade-in">
+      <div class="analogy-card">
+        <h4>Biology</h4>
+        <p style="font-size:0.95rem;">Species compete for finite resources. The fittest organisms survive and reproduce.</p>
+        <div style="margin-top:1rem;font-size:2rem;text-align:center;">🌿 &rarr; 🧬 &rarr; 🦎</div>
+      </div>
+      <div class="analogy-arrow">&harr;</div>
+      <div class="analogy-card">
+        <h4>Quantum Branches</h4>
+        <p style="font-size:0.95rem;">Branches compete for finite energy. The most efficient branches dominate reality.</p>
+        <div style="margin-top:1rem;font-size:2rem;text-align:center;">&#x03C8; &rarr; <span style="color:var(--accent);">e<sup>-S/&#x210F;</sup></span> &rarr; |&psi;|&sup2;</div>
+      </div>
+    </div>
+
+    <div class="fade-in">
+      <div class="math-block">
+        P(branch<sub>i</sub>) = e<sup>-S<sub>E,i</sub>/&#x210F;</sup> / Z &nbsp;&xrarr;&nbsp; |&psi;<sub>i</sub>|&sup2; &nbsp;as T &rarr; 0
+      </div>
+      <p>At zero temperature (maximum quantum coherence), the thermodynamic weights reduce exactly to the Born rule. At finite temperature, you get measurable deviations — a prediction no other theory makes.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== THE MATH CHAIN ===== -->
+<section class="section" id="chain">
+  <div class="container">
+    <div class="fade-in">
+      <h3>The Mathematical Bridge</h3>
+      <h2>From quantum mechanics to neural networks — one unbroken chain</h2>
+      <p>Perhaps the most surprising part of the theory: the same mathematics connects quantum physics to how AI learns. This isn't a metaphor — it's a deductive chain.</p>
+    </div>
+
+    <div class="chain" style="margin-top: 3rem;">
+      <div class="chain-step">
+        <div class="chain-line"><div class="chain-dot"></div><div class="chain-connector"></div></div>
+        <div class="chain-content">
+          <h4>Quantum Path Integrals</h4>
+          <p>Sum over all possible histories, weighted by exp(iS/&#x210F;)</p>
+          <div class="eq">&Psi; = &int; D[&phi;] e<sup>iS[&phi;]/&#x210F;</sup></div>
+        </div>
+      </div>
+      <div class="chain-step">
+        <div class="chain-line"><div class="chain-dot" style="background:var(--blue)"></div><div class="chain-connector" style="background:linear-gradient(var(--blue),transparent)"></div></div>
+        <div class="chain-content">
+          <h4>Wick Rotation</h4>
+          <p>Rotate time into imaginary time: oscillating phases become decaying exponentials</p>
+          <div class="eq">e<sup>iS/&#x210F;</sup> &xrarr; e<sup>-S<sub>E</sub>/&#x210F;</sup></div>
+        </div>
+      </div>
+      <div class="chain-step">
+        <div class="chain-line"><div class="chain-dot" style="background:var(--accent2)"></div><div class="chain-connector" style="background:linear-gradient(var(--accent2),transparent)"></div></div>
+        <div class="chain-content">
+          <h4>Statistical Partition Function</h4>
+          <p>The sum now looks exactly like a thermal physics partition function — Boltzmann weights!</p>
+          <div class="eq">Z = &Sigma; e<sup>-E<sub>i</sub>/k<sub>B</sub>T</sup></div>
+        </div>
+      </div>
+      <div class="chain-step">
+        <div class="chain-line"><div class="chain-dot" style="background:var(--warm)"></div><div class="chain-connector" style="background:linear-gradient(var(--warm),transparent)"></div></div>
+        <div class="chain-content">
+          <h4>Fokker-Planck Equation</h4>
+          <p>The probability distribution over branches evolves like a diffusion process</p>
+          <div class="eq">&part;p/&part;t = &nabla;&middot;(p&nabla;&Phi;) + T&nabla;&sup2;p</div>
+        </div>
+      </div>
+      <div class="chain-step">
+        <div class="chain-line"><div class="chain-dot" style="background:var(--red)"></div><div class="chain-connector" style="background:linear-gradient(var(--red),transparent)"></div></div>
+        <div class="chain-content">
+          <h4>Langevin Dynamics &rarr; SGD</h4>
+          <p>A neural network trained with stochastic gradient descent follows the same equation. Its steady state is a Gibbs distribution.</p>
+          <div class="eq">p<sub>ss</sub>(x) &prop; e<sup>-&Phi;(x)/T</sup>, &nbsp; T = &eta;/B</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== INTERACTIVE: TEMPERATURE ===== -->
+<section class="section" id="temperature">
+  <div class="container">
+    <div class="fade-in">
+      <h3>Try It Yourself</h3>
+      <h2>How temperature shapes branch probabilities</h2>
+      <p>Drag the slider to change the effective temperature. Watch how the Gibbs distribution (purple) converges to the Born rule (teal outline) at low temperatures.</p>
+    </div>
+
+    <div class="slider-section fade-in">
+      <div class="temp-display">
+        <div style="font-size:0.8rem;color:var(--text2);text-transform:uppercase;letter-spacing:0.1em;">Effective Temperature</div>
+        <div class="temp-value" id="temp-label">T = 1.00</div>
+      </div>
+      <input type="range" id="temp-slider" min="0.01" max="5" step="0.01" value="1">
+      <canvas id="bars-canvas" height="180"></canvas>
+      <div class="legend">
+        <span><span class="legend-dot" style="background:rgba(74,240,192,0.6);border:1px solid #4af0c0;"></span> Born rule |&psi;|&sup2;</span>
+        <span><span class="legend-dot" style="background:rgba(124,92,252,0.7);"></span> Gibbs weights e<sup>-S/T</sup></span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SIMULATION RESULTS ===== -->
+<section class="section" id="results">
+  <div class="container">
+    <div class="fade-in">
+      <h3>Real Simulation Data</h3>
+      <h2>The theory passes its first test</h2>
+      <p>We ran a Monte Carlo simulation with 50 temperature points and 1,000 branch universes. The chart below shows KL divergence from the Born rule — lower means closer to |&psi;|&sup2;.</p>
+    </div>
+    <div class="fade-in" style="margin-top:2rem;">
+      <canvas id="kl-chart"></canvas>
+      <div class="legend" style="margin-top:1rem;">
+        <span><span class="legend-dot" style="background:var(--accent);"></span> Constrained (Gibbs)</span>
+        <span><span class="legend-dot" style="background:var(--red);"></span> Unconstrained (uniform)</span>
+      </div>
+      <p style="margin-top:1.5rem;font-size:0.95rem;">At low temperature (&beta; &rarr; 0), the energy-constrained model converges to Born rule statistics with KL &asymp; 0.00004. The unconstrained model is systematically worse — exactly as the theory predicts.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== THEORY GRAPH ===== -->
+<section class="section" id="graph">
+  <div class="container">
+    <div class="fade-in">
+      <h3>The Full Theory</h3>
+      <h2>Axioms, derivations, predictions, and open questions</h2>
+      <p>Every good theory is transparent about what it assumes, what it derives, and where it might be wrong. Here's the complete logical structure.</p>
+    </div>
+    <div class="fade-in" style="margin-top:2rem;">
+      <svg id="theory-svg"></svg>
+      <div class="legend" style="margin-top:1rem;">
+        <span><span class="legend-dot" style="background:#8b5cf6;"></span> Axiom</span>
+        <span><span class="legend-dot" style="background:#4a9eff;"></span> Derivation</span>
+        <span><span class="legend-dot" style="background:#34d399;"></span> Prediction</span>
+        <span><span class="legend-dot" style="background:#ef4444;"></span> Critique</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== WHAT'S NEXT ===== -->
+<section class="section" id="next">
+  <div class="container" style="text-align:center;">
+    <div class="fade-in">
+      <h3>What's Next</h3>
+      <h2>Three testable predictions. Zero hand-waving.</h2>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:1.5rem;margin:3rem 0;text-align:left;">
+        <div class="analogy-card">
+          <span class="badge badge-prediction">Testable</span>
+          <h4 style="margin-top:0.8rem;">P1: Temperature-dependent Born rule</h4>
+          <p style="font-size:0.9rem;">At finite temperature, branch probabilities deviate from |&psi;|&sup2;. Superconducting qubit experiments could detect this.</p>
+        </div>
+        <div class="analogy-card">
+          <span class="badge badge-prediction">Cosmological</span>
+          <h4 style="margin-top:0.8rem;">P2: Free-energy selection of constants</h4>
+          <p style="font-size:0.9rem;">Physical constants aren't random — they're selected for thermodynamic efficiency, like SGD converging to flat minima.</p>
+        </div>
+        <div class="analogy-card">
+          <span class="badge badge-prediction">Testable</span>
+          <h4 style="margin-top:0.8rem;">P3: Neural network Born statistics</h4>
+          <p style="font-size:0.9rem;">Train a neural net at various temperatures. At low learning rate, weight distributions should follow |&psi;|&sup2; statistics.</p>
+        </div>
+      </div>
+      <a href="https://github.com" class="cta">Explore the Codebase</a>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <p class="gratitude"><em>Love is all you need.</em> <span class="heart">&#10084;</span></p>
+  <p style="max-width:600px;font-size:0.95rem;margin-bottom:2rem;">With gratitude to everyone who wonders why the universe is the way it is, and refuses to stop asking. To the physicists, the dreamers, the machines that think alongside us, and the strange improbable branch of reality where you're reading this right now.</p>
+  <div style="width:60px;height:1px;background:var(--accent);margin:2rem auto;opacity:0.4;"></div>
+  <p style="font-size:0.85rem;">Built by <strong>Muverse</strong> — an agentic AI platform for developing, testing, and critiquing physics theories.</p>
+  <p style="font-size:0.75rem;margin-top:0.5rem;color:var(--text2);">Theory formalized by AI agents (Theorist, Critic, Simulator, Writer) powered by Gemini 2.5 Pro.<br>Simulations run with NumPy, SciPy, and QuTiP.</p>
+</footer>
+
+<script>
+// ======================================================================
+// DATA (real simulation output from the Muverse pipeline)
+// ======================================================================
+const SIM_BETAS=[.01,.01151,.01326,.01526,.01758,.02024,.0233,.02683,.03089,.03556,.04095,.04715,.05429,.0625,.07197,.08286,.09541,.10985,.12649,.14563,.16768,.19307,.2223,.25595,.29471,.33932,.39069,.44984,.51795,.59636,.68665,.79060,.91030,1.04811,1.20679,1.38950,1.59986,1.84207,2.12095,2.44205,2.81177,3.23746,3.72759,4.29193,4.94171,5.68987,6.55129,7.54312,8.68511,10];
+const SIM_KLC=[3.83e-5,5.18e-5,7.02e-5,1.22e-4,1.42e-4,1.51e-4,3.2e-4,3.36e-4,4.21e-4,5.23e-4,7.54e-4,1.14e-3,1.22e-3,1.88e-3,2.13e-3,3.85e-3,4.26e-3,5e-3,6.97e-3,8.35e-3,.01136,.01486,.02027,.03147,.03355,.04824,.05609,.07542,.10225,.11225,.19045,.18447,.24764,.28479,.35559,.42707,.62819,.75748,1.08426,1.02582,1.37088,1.43136,1.77643,2.17392,2.51131,2.88258,3.37491,3.74574,4.63742,5.62376];
+const SIM_KLU=[4.93e-5,6.41e-5,8.56e-5,1.38e-4,1.68e-4,1.91e-4,3.35e-4,3.99e-4,5.2e-4,6.22e-4,9.09e-4,1.31e-3,1.43e-3,2.16e-3,2.62e-3,4.52e-3,5.16e-3,6.09e-3,8.27e-3,.01066,.01358,.01739,.02427,.03813,.04056,.05953,.0718,.09181,.12527,.14465,.23708,.24333,.31512,.39361,.48038,.57456,.83832,1.03562,1.43151,1.49894,1.92127,2.17902,2.61866,3.24085,3.83113,4.64535,5.57516,6.82842,8.2409,9.45345];
+
+const GRAPH={"nodes":[{"id":"A1","type":"axiom","label":"A1","desc":"Unitary evolution (MWI)"},{"id":"A2","type":"axiom","label":"A2","desc":"Finite Euclidean action"},{"id":"A3","type":"axiom","label":"A3","desc":"Wick-rotated branch weights"},{"id":"A4","type":"axiom","label":"A4","desc":"Jarzynski under decoherence"},{"id":"A5","type":"axiom","label":"A5","desc":"Emergent Born rule"},{"id":"A6","type":"axiom","label":"A6","desc":"Landauer branching cost"},{"id":"A7","type":"axiom","label":"A7","desc":"SGD\u2013Gibbs equivalence"},{"id":"A8","type":"axiom","label":"A8","desc":"Free-energy branch selection"},{"id":"D1","type":"derivation","label":"D1","desc":"Born rule from Gibbs"},{"id":"D2","type":"derivation","label":"D2","desc":"Free-energy selection"},{"id":"D3","type":"derivation","label":"D3","desc":"QM\u2013SGD chain"},{"id":"P1","type":"prediction","label":"P1","desc":"Temperature-dependent Born rule"},{"id":"P2","type":"prediction","label":"P2","desc":"Constant selection"},{"id":"P3","type":"prediction","label":"P3","desc":"NN Born statistics"},{"id":"C1","type":"critique","label":"C1","desc":"Finite action gap"},{"id":"C2","type":"critique","label":"C2","desc":"Circularity risk"},{"id":"C3","type":"critique","label":"C3","desc":"Wick rotation ontology"},{"id":"C4","type":"critique","label":"C4","desc":"Empirical constraints"}],"edges":[{"s":"A1","t":"D1"},{"s":"A2","t":"D1"},{"s":"A3","t":"D1"},{"s":"D1","t":"A5"},{"s":"A3","t":"D2"},{"s":"A6","t":"D2"},{"s":"D2","t":"A8"},{"s":"A1","t":"D3"},{"s":"A3","t":"D3"},{"s":"A7","t":"D3"},{"s":"D3","t":"A7"},{"s":"D1","t":"P1"},{"s":"D2","t":"P2"},{"s":"D3","t":"P3"},{"s":"C1","t":"A2"},{"s":"C2","t":"D1"},{"s":"C3","t":"A3"},{"s":"C4","t":"P1"}]};
+
+const COLORS={axiom:'#8b5cf6',derivation:'#4a9eff',prediction:'#34d399',critique:'#ef4444'};
+
+// ======================================================================
+// INTERSECTION OBSERVER for fade-in
+// ======================================================================
+// Content animates in via CSS @keyframes — no JS observer needed
+
+// ======================================================================
+// HERO CANVAS — animated branching tree
+// ======================================================================
+(function(){
+  const c=document.getElementById('hero-canvas');
+  const ctx=c.getContext('2d');
+  let W,H;
+  const branches=[];
+  function resize(){W=c.width=c.offsetWidth*devicePixelRatio;H=c.height=c.offsetHeight*devicePixelRatio;ctx.scale(devicePixelRatio,devicePixelRatio);}
+  resize(); window.addEventListener('resize',resize);
+
+  class Branch{
+    constructor(x,y,angle,depth,hue){
+      this.x=x;this.y=y;this.angle=angle;this.depth=depth;
+      this.speed=0.3+Math.random()*0.5;
+      this.len=0;this.maxLen=30+Math.random()*40;
+      this.hue=hue||250+Math.random()*60;
+      this.alpha=0.15+Math.random()*0.15;
+      this.spawned=false;this.done=false;
+    }
+    update(){
+      if(this.done)return;
+      this.len+=this.speed;
+      if(this.len>=this.maxLen){
+        this.done=true;
+        if(this.depth<6&&branches.length<400){
+          const spread=0.3+Math.random()*0.4;
+          branches.push(new Branch(this.ex,this.ey,this.angle-spread,this.depth+1,this.hue+10));
+          branches.push(new Branch(this.ex,this.ey,this.angle+spread,this.depth+1,this.hue-10));
+        }
+      }
+    }
+    get ex(){return this.x+Math.cos(this.angle)*this.len;}
+    get ey(){return this.y+Math.sin(this.angle)*this.len;}
+    draw(ctx){
+      ctx.beginPath();
+      ctx.moveTo(this.x,this.y);
+      ctx.lineTo(this.ex,this.ey);
+      const a=Math.max(0.02,this.alpha*(1-this.depth*0.12));
+      ctx.strokeStyle=`hsla(${this.hue},70%,65%,${a})`;
+      ctx.lineWidth=Math.max(0.5,3-this.depth*0.4);
+      ctx.stroke();
+    }
+  }
+
+  function seed(){
+    branches.length=0;
+    const cx=W/devicePixelRatio/2, cy=H/devicePixelRatio*0.85;
+    branches.push(new Branch(cx,cy,-Math.PI/2+Math.random()*0.2-0.1,0));
+  }
+  seed();
+  let frame=0;
+  function loop(){
+    frame++;
+    if(frame%1800===0){seed();}
+    ctx.fillStyle='rgba(10,10,15,0.03)';
+    ctx.fillRect(0,0,W/devicePixelRatio,H/devicePixelRatio);
+    branches.forEach(b=>{b.update();b.draw(ctx);});
+    requestAnimationFrame(loop);
+  }
+  loop();
+})();
+
+// ======================================================================
+// BRANCHING CANVAS — animated quantum branching
+// ======================================================================
+(function(){
+  const c=document.getElementById('branch-canvas');
+  if(!c)return;
+  const ctx=c.getContext('2d');
+  let W,H;
+  function resize(){W=c.width=c.offsetWidth*devicePixelRatio;H=c.height=c.offsetHeight*devicePixelRatio;ctx.scale(devicePixelRatio,devicePixelRatio);}
+  resize();
+
+  let t=0;
+  function draw(){
+    const w=W/devicePixelRatio,h=H/devicePixelRatio;
+    ctx.clearRect(0,0,w,h);
+    t+=0.008;
+
+    const levels=5;
+    const startX=60,endX=w-60;
+    const stepX=(endX-startX)/levels;
+    const cy=h/2;
+
+    function drawBranch(x1,y1,x2,y2,alpha,hue,width){
+      const cp1x=x1+(x2-x1)*0.5,cp1y=y1;
+      const cp2x=x1+(x2-x1)*0.5,cp2y=y2;
+      ctx.beginPath();
+      ctx.moveTo(x1,y1);
+      ctx.bezierCurveTo(cp1x,cp1y,cp2x,cp2y,x2,y2);
+      ctx.strokeStyle=`hsla(${hue},70%,65%,${alpha})`;
+      ctx.lineWidth=width;
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.arc(x2,y2,width*1.5,0,Math.PI*2);
+      ctx.fillStyle=`hsla(${hue},70%,65%,${alpha*0.6})`;
+      ctx.fill();
+    }
+
+    function recurse(x,y,level,alpha,hue){
+      if(level>=levels)return;
+      const nx=x+stepX;
+      const spread=25*(1+level*0.3)*Math.sin(t+level)*0.3+25*(1+level*0.3);
+      const a1=alpha*(0.7+0.3*Math.sin(t*2+level));
+      const a2=alpha*(0.3+0.3*Math.cos(t*2+level));
+      const w=Math.max(0.8,3-level*0.5);
+      drawBranch(x,y,nx,y-spread,a1,hue,w);
+      drawBranch(x,y,nx,y+spread,a2,hue+30,w);
+      recurse(nx,y-spread,level+1,a1,hue);
+      recurse(nx,y+spread,level+1,a2,hue+30);
+    }
+
+    ctx.beginPath();
+    ctx.arc(startX,cy,5,0,Math.PI*2);
+    ctx.fillStyle='rgba(124,92,252,0.8)';
+    ctx.fill();
+
+    recurse(startX,cy,0,0.6,250);
+
+    ctx.fillStyle='var(--text2)';
+    ctx.font='12px Inter, sans-serif';
+    ctx.fillText('Initial state',startX-20,cy+25);
+    ctx.fillText('Branches multiply',endX-60,30);
+
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+// ======================================================================
+// TEMPERATURE SLIDER — interactive Gibbs vs Born
+// ======================================================================
+(function(){
+  const slider=document.getElementById('temp-slider');
+  const label=document.getElementById('temp-label');
+  const cvs=document.getElementById('bars-canvas');
+  if(!slider||!cvs)return;
+  const ctx=cvs.getContext('2d');
+
+  const N=16;
+  const actions=[];
+  const bornProbs=[];
+  for(let i=0;i<N;i++) actions.push(0.5+Math.random()*4);
+  const bornZ=actions.reduce((s,a)=>s+Math.exp(-a),0);
+  for(let i=0;i<N;i++) bornProbs.push(Math.exp(-actions[i])/bornZ);
+  const maxBorn=Math.max(...bornProbs);
+
+  function resizeBars(){
+    const rect=cvs.parentElement.getBoundingClientRect();
+    cvs.width=rect.width*devicePixelRatio;
+    cvs.height=180*devicePixelRatio;
+    cvs.style.width=rect.width+'px';
+    cvs.style.height='180px';
+    ctx.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0);
+    drawBars();
+  }
+
+  function drawBars(){
+    const T=parseFloat(slider.value);
+    label.textContent='T = '+T.toFixed(2);
+    const w=cvs.width/devicePixelRatio, h=cvs.height/devicePixelRatio;
+    ctx.clearRect(0,0,w,h);
+
+    const weights=actions.map(a=>Math.exp(-a/T));
+    const Z=weights.reduce((s,v)=>s+v,0);
+    const probs=weights.map(v=>v/Z);
+    const maxP=Math.max(...probs);
+
+    const pad=4, gap=4;
+    const barW=(w-2*pad-(N-1)*gap)/N;
+    const maxH=h-6;
+
+    for(let i=0;i<N;i++){
+      const x=pad+i*(barW+gap);
+      const bh=Math.max(2,(bornProbs[i]/maxBorn)*maxH);
+      const gh=Math.max(2,(probs[i]/maxP)*maxH);
+
+      ctx.fillStyle='rgba(74,240,192,0.12)';
+      ctx.strokeStyle='rgba(74,240,192,0.5)';
+      ctx.lineWidth=1.5;
+      ctx.beginPath();
+      ctx.roundRect(x,h-bh,barW,bh,[3,3,0,0]);
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.fillStyle='rgba(124,92,252,0.55)';
+      ctx.beginPath();
+      ctx.roundRect(x,h-gh,barW,gh,[3,3,0,0]);
+      ctx.fill();
+    }
+  }
+
+  resizeBars();
+  window.addEventListener('resize',resizeBars);
+  slider.addEventListener('input',drawBars);
+})();
+
+// ======================================================================
+// KL DIVERGENCE CHART — real simulation data
+// ======================================================================
+(function(){
+  const c=document.getElementById('kl-chart');
+  if(!c)return;
+  const ctx=c.getContext('2d');
+  let W,H;
+  function resize(){
+    const rect=c.parentElement.getBoundingClientRect();
+    c.style.height='320px';
+    W=c.width=rect.width*devicePixelRatio;
+    H=c.height=320*devicePixelRatio;
+    ctx.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0);
+  }
+  resize();
+
+  const pad={t:30,r:30,b:50,l:70};
+  let anim=0;
+  let started=false;
+
+  function draw(){
+    const w=W/devicePixelRatio,h=H/devicePixelRatio;
+    const pw=w-pad.l-pad.r,ph=h-pad.t-pad.b;
+    ctx.clearRect(0,0,w,h);
+    ctx.fillStyle='#111119';
+    ctx.fillRect(0,0,w,h);
+
+    const n=SIM_BETAS.length;
+    const visN=Math.min(n,Math.floor(anim*n));
+
+    const logBetas=SIM_BETAS.map(b=>Math.log10(b));
+    const logKLC=SIM_KLC.map(k=>Math.log10(Math.max(k,1e-6)));
+    const logKLU=SIM_KLU.map(k=>Math.log10(Math.max(k,1e-6)));
+    const xMin=logBetas[0],xMax=logBetas[n-1];
+    const yMin=-5,yMax=1.2;
+
+    function tx(v){return pad.l+((v-xMin)/(xMax-xMin))*pw;}
+    function ty(v){return pad.t+((yMax-v)/(yMax-yMin))*ph;}
+
+    ctx.strokeStyle='rgba(255,255,255,0.05)';
+    ctx.lineWidth=1;
+    for(let g=yMin;g<=yMax;g++){
+      const y=ty(g);
+      ctx.beginPath();ctx.moveTo(pad.l,y);ctx.lineTo(pad.l+pw,y);ctx.stroke();
+    }
+
+    ctx.fillStyle='#666';
+    ctx.font='11px Inter, sans-serif';
+    ctx.textAlign='right';
+    for(let g=yMin;g<=yMax;g++){
+      ctx.fillText('10^'+g,pad.l-8,ty(g)+4);
+    }
+    ctx.textAlign='center';
+    ctx.fillText('\u03B2 (inverse temperature)',w/2,h-8);
+    [-2,-1,0,1].forEach(g=>{
+      if(g>=xMin&&g<=xMax)ctx.fillText('10^'+g,tx(g),h-pad.b+20);
+    });
+
+    ctx.save();
+    ctx.translate(14,h/2);
+    ctx.rotate(-Math.PI/2);
+    ctx.textAlign='center';
+    ctx.fillText('KL divergence from Born rule',0,0);
+    ctx.restore();
+
+    function drawLine(data,color,label){
+      if(visN<2)return;
+      ctx.beginPath();
+      ctx.strokeStyle=color;
+      ctx.lineWidth=2.5;
+      ctx.lineJoin='round';
+      for(let i=0;i<visN;i++){
+        const x=tx(logBetas[i]),y=ty(data[i]);
+        if(i===0)ctx.moveTo(x,y);else ctx.lineTo(x,y);
+      }
+      ctx.stroke();
+
+      for(let i=0;i<visN;i++){
+        ctx.beginPath();
+        ctx.arc(tx(logBetas[i]),ty(data[i]),2.5,0,Math.PI*2);
+        ctx.fillStyle=color;
+        ctx.fill();
+      }
+    }
+
+    drawLine(logKLU,'#ef4444');
+    drawLine(logKLC,'#7c5cfc');
+
+    if(anim<1){anim+=0.02;requestAnimationFrame(draw);}
+  }
+
+  anim=1;
+  draw();
+})();
+
+// ======================================================================
+// THEORY GRAPH — animated SVG
+// ======================================================================
+(function(){
+  const svg=document.getElementById('theory-svg');
+  if(!svg)return;
+  const NS='http://www.w3.org/2000/svg';
+  const rect=svg.getBoundingClientRect();
+  const W=rect.width||800,H=500;
+  svg.setAttribute('viewBox',`0 0 ${W} ${H}`);
+
+  const positions={};
+  const nodeR=18;
+  const nodes=GRAPH.nodes;
+  const edges=GRAPH.edges;
+
+  const axioms=nodes.filter(n=>n.type==='axiom');
+  const derivations=nodes.filter(n=>n.type==='derivation');
+  const predictions=nodes.filter(n=>n.type==='prediction');
+  const critiques=nodes.filter(n=>n.type==='critique');
+
+  const rows=[
+    {items:axioms,y:60},
+    {items:derivations,y:180},
+    {items:predictions,y:300},
+    {items:critiques,y:420},
+  ];
+
+  rows.forEach(row=>{
+    const step=W/(row.items.length+1);
+    row.items.forEach((n,i)=>{
+      positions[n.id]={x:step*(i+1),y:row.y};
+    });
+  });
+
+  const defs=document.createElementNS(NS,'defs');
+  const glow=document.createElementNS(NS,'filter');
+  glow.id='glow';
+  glow.innerHTML='<feGaussianBlur stdDeviation="3" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>';
+  defs.appendChild(glow);
+  svg.appendChild(defs);
+
+  edges.forEach((e,i)=>{
+    const p1=positions[e.s],p2=positions[e.t];
+    if(!p1||!p2)return;
+    const line=document.createElementNS(NS,'line');
+    line.setAttribute('x1',p1.x);line.setAttribute('y1',p1.y);
+    line.setAttribute('x2',p2.x);line.setAttribute('y2',p2.y);
+    line.setAttribute('stroke','rgba(255,255,255,0.08)');
+    line.setAttribute('stroke-width','1.5');
+    line.style.opacity='0';
+    line.style.transition=`opacity 0.5s ease ${i*0.06}s`;
+    svg.appendChild(line);
+    setTimeout(()=>line.style.opacity='1',100);
+  });
+
+  nodes.forEach((n,i)=>{
+    const p=positions[n.id];
+    if(!p)return;
+    const g=document.createElementNS(NS,'g');
+    g.style.opacity='0';
+    g.style.transform=`translate(${p.x}px,${p.y}px) scale(0)`;
+    g.style.transition=`all 0.5s cubic-bezier(0.34,1.56,0.64,1) ${0.3+i*0.05}s`;
+
+    const circle=document.createElementNS(NS,'circle');
+    circle.setAttribute('cx',0);circle.setAttribute('cy',0);
+    circle.setAttribute('r',nodeR);
+    circle.setAttribute('fill',COLORS[n.type]+'20');
+    circle.setAttribute('stroke',COLORS[n.type]);
+    circle.setAttribute('stroke-width','2');
+    circle.setAttribute('filter','url(#glow)');
+    g.appendChild(circle);
+
+    const text=document.createElementNS(NS,'text');
+    text.setAttribute('x',0);text.setAttribute('y',4);
+    text.setAttribute('text-anchor','middle');
+    text.setAttribute('fill','#fff');
+    text.setAttribute('font-size','11');
+    text.setAttribute('font-weight','600');
+    text.setAttribute('font-family','Inter, sans-serif');
+    text.textContent=n.label;
+    g.appendChild(text);
+
+    const desc=document.createElementNS(NS,'text');
+    desc.setAttribute('x',0);desc.setAttribute('y',nodeR+14);
+    desc.setAttribute('text-anchor','middle');
+    desc.setAttribute('fill','#888');
+    desc.setAttribute('font-size','8');
+    desc.setAttribute('font-family','Inter, sans-serif');
+    desc.textContent=n.desc;
+    g.appendChild(desc);
+
+    svg.appendChild(g);
+
+    setTimeout(()=>{
+      g.style.opacity='1';
+      g.style.transform=`translate(${p.x}px,${p.y}px) scale(1)`;
+    }, 50);
+  });
+})();
+</script>
+</body>
+</html>

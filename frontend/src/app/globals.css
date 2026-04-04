@@ -1,0 +1,105 @@
+@import "tailwindcss";
+
+:root {
+  --bg-primary: #0a0a0f;
+  --bg-secondary: #12121a;
+  --bg-tertiary: #1a1a2e;
+  --text-primary: #e8e8f0;
+  --text-secondary: #9898b0;
+  --accent-blue: #4a9eff;
+  --accent-purple: #8b5cf6;
+  --accent-green: #34d399;
+  --accent-amber: #f59e0b;
+  --accent-red: #ef4444;
+  --border: #2a2a40;
+}
+
+body {
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: "Inter", system-ui, -apple-system, sans-serif;
+}
+
+.card {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.5rem;
+}
+
+.card-hover:hover {
+  border-color: var(--accent-blue);
+  box-shadow: 0 0 20px rgba(74, 158, 255, 0.1);
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.125rem 0.5rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.badge-postulated { background: rgba(139, 92, 246, 0.2); color: #a78bfa; }
+.badge-derived { background: rgba(52, 211, 153, 0.2); color: #6ee7b7; }
+.badge-contested { background: rgba(239, 68, 68, 0.2); color: #fca5a5; }
+.badge-unverified { background: rgba(245, 158, 11, 0.2); color: #fcd34d; }
+.badge-verified { background: rgba(52, 211, 153, 0.2); color: #6ee7b7; }
+.badge-critical { background: rgba(239, 68, 68, 0.2); color: #fca5a5; }
+.badge-high { background: rgba(245, 158, 11, 0.2); color: #fcd34d; }
+.badge-medium { background: rgba(74, 158, 255, 0.2); color: #93c5fd; }
+.badge-low { background: rgba(52, 211, 153, 0.2); color: #6ee7b7; }
+
+.btn {
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  font-weight: 500;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.15s;
+  border: 1px solid transparent;
+}
+
+.btn-primary {
+  background: var(--accent-blue);
+  color: white;
+}
+
+.btn-primary:hover {
+  background: #3b8bef;
+}
+
+.btn-ghost {
+  background: transparent;
+  border-color: var(--border);
+  color: var(--text-secondary);
+}
+
+.btn-ghost:hover {
+  border-color: var(--accent-blue);
+  color: var(--text-primary);
+}
+
+.tab-active {
+  color: var(--accent-blue);
+  border-bottom: 2px solid var(--accent-blue);
+}
+
+.mono {
+  font-family: "JetBrains Mono", "Fira Code", monospace;
+}
+
+.agent-output {
+  white-space: pre-wrap;
+  line-height: 1.6;
+}
+
+@keyframes pulse-glow {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
+
+.loading-pulse {
+  animation: pulse-glow 1.5s ease-in-out infinite;
+}

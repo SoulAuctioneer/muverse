@@ -1,0 +1,214 @@
+﻿The Evolved Multiverse: Convergence of Everettian Quantum Mechanics, Thermodynamic Dissipation, and Neural Network Cosmologies
+The quest to reconcile the fundamental laws of physics with the observable complexity of the universe has led to a radical synthesis of quantum mechanics, information theory, and evolutionary biology. Central to this discourse is the Many-Worlds Interpretation (MWI), which posits that the universal wavefunction is an objectively real entity that never collapses, but instead branches into a myriad of parallel realities.1 While traditional MWI is often viewed as a non-selective process where all possibilities are realized with equal ontological status, a burgeoning field of "evolutionary physics" suggests that these branches are subject to a filtering process akin to natural selection.2 This report explores the intersection of Everettian multiplicity and exploratory evolution, proposing a framework where the laws of physics are not eternal axioms but emerged as stable "attractors" through thermodynamic and informational constraints.4
+Ontological Foundations of the Branching Multiverse
+The Many-Worlds Interpretation, originally formulated by Hugh Everett III in 1957 as the "relative state" formulation, asserts that quantum mechanics is a complete theory that describes the entire universe through a single, unitarily evolving state vector   .1 Unlike the Copenhagen interpretation, which relies on a stochastic "collapse" of the wavefunction during measurement, MWI maintains that every possible outcome of a quantum interaction is physically realized in a distinct branch of the multiverse.7 This process is governed strictly by the Schrödinger equation:
+  
+
+In this view, measurement is not a privileged event caused by an external observer but a physical interaction that entangles the system, the apparatus, and the environment.1 This entanglement leads to decoherence, a process where the interference terms between different macroscopic outcomes become vanishingly small, effectively rendering the branches independent and non-communicating.1 The table below summarizes the key ontological distinctions between the Everettian framework and its primary competitors in quantum foundations.
+Feature
+	Copenhagen Interpretation
+	Many-Worlds Interpretation
+	Objective Collapse (GRW)
+	Bohmian Mechanics
+	Wavefunction Reality
+	Epistemic/Probabilistic
+	Ontic/Objective
+	Ontic/Objective
+	Ontic (Pilot Wave)
+	Collapse Process
+	Postulated/Stochastic
+	None (Decoherence)
+	Physical/Spontaneous
+	None
+	Multiverse Structure
+	No
+	Yes (Infinite Branches)
+	No
+	No
+	Determinism
+	No
+	Yes (Unitary)
+	No
+	Yes
+	Role of Observer
+	Central/External
+	Internal System
+	Irrelevant
+	Irrelevant
+	The "multi-verse field" described by MWI provides a vast configuration space for physical exploration.7 However, the standard formulation presents a significant tension with evolutionary logic: if every branch persists, there is no differential survival and, consequently, no selection.12 To bridge this gap, one must introduce a "weighting" mechanism—a physical property that distinguishes robust, stable branches from those that are transient or "faint".8
+The Probability Problem and the Measure of Existence
+The most significant theoretical challenge for MWI is the derivation of the Born rule, which states that the probability    of an outcome is equal to the squared amplitude of its corresponding branch weight:   .15 In a deterministic multiverse where all outcomes occur, "probability" must be redefined as a "measure of existence" or a "rational credence" assigned by an observer who is uncertain about their location within the branching structure.14
+Recent scholarship, particularly the work of Sebens and Carroll (2018), has attempted to derive these probabilities through "self-locating uncertainty" and the Epistemic Separability Principle (ESP-QM).17 This principle suggests that an agent's beliefs about their branch should depend only on the local reduced density matrix (RDM) of their immediate environment.17 However, critiques of this model highlight a "loss of local amplitude information" in global branching scenarios, where distant measurements might assign an observer to a "pure" state that lacks the necessary weighting coefficients to recover the Born rule.17
+This debate underscores the need for a physical, rather than purely epistemic, grounding for branch weights.13 If branch weights represent a physical resource—such as energy density or informational stability—then the Born rule ceases to be a mathematical convenience and becomes a law of "thermodynamic fitness".4
+Evolutionary Cosmology and the Mutability of Laws
+The concept of "laws as attractors" rather than axioms aligns with the tradition of evolutionary cosmology, most notably formalized by Lee Smolin in his theory of Cosmological Natural Selection (CNS).12 Smolin proposes that universes reproduce through black holes, with each new "daughter" universe inheriting slightly mutated versions of the parent's physical constants.12 This creates a selection pressure favoring universes that produce more black holes—a condition that, coincidentally or necessarily, favors the complex chemistry required for life.12
+This perspective suggests that what we call "fundamental constants" are actually "frozen contingencies" or "habits" that the universe settled into because they were stable solutions to the problem of persistence.19 This aligns with Charles Sanders Peirce’s "synechism," which views the laws of nature as evolving regularities rather than eternal truths. In an Everettian context, this implies that the "fit" branches are those whose internal laws are self-consistent and resilient to decoherence.2
+Evolutionary Concept
+	Biological Application
+	Cosmological/Quantum Application
+	Variation
+	Genetic Mutation
+	Quantum Branching / CNS Mutations
+	Selection
+	Differential Survival
+	Decoherence / Stability of Pointer States
+	Replication
+	Reproduction
+	Information Redundancy in Environment
+	Niche
+	Ecosystem
+	Parameter Space of Physical Constants
+	Fitness
+	Reproductive Success
+	Thermodynamic Dissipation / Branch Weight
+	While Smolin’s CNS provides a mechanism for selection across separate universes, the integration with MWI suggests a more continuous process.12 If we view the universal wavefunction as a learning system, the branching process is equivalent to a "stochastic gradient descent" toward optimal configurations of matter and energy.20
+Quantum Darwinism and the Emergence of Objectivity
+Quantum Darwinism, pioneered by Wojciech Zurek, provides the missing link between quantum multiplicity and classical stability.2 The theory posits that the environment acts as a selective filter through "einselection" (environment-induced superselection), favoring "pointer states" that are robust against decoherence.2 These states survive because they can be redundantly encoded across many fragments of the environment, allowing multiple observers to reach a consensus on their properties.2
+In this framework, the "objectivity" of the classical world is a result of a Darwinian competition for informational space.2 A quantum state is "fit" if it can produce many "informational offspring" in its surroundings.3 This replication mechanism allows a specific branch of the wavefunction to dominate the local environment, effectively "winning" the competition for reality in that sector of the multiverse.3
+The process of einselection selects bases that commute with the interaction Hamiltonian, typically favoring states that are localized in space.2 This selection process provides a physical basis for why we observe a stable, three-dimensional classical world despite the underlying high-dimensional quantum substrate.2
+Thermodynamic Constraints: The Energetic Cost of Branching
+A central intuition in the debate over evolutionary physics is the role of finite energy.4 In any other physical or biological system, exploring a possibility space or instantiating a new configuration requires an expenditure of resources.24 Standard MWI often assumes that energy is infinitely divisible across branches, but applying thermodynamic constraints—specifically Landauer’s Principle—reveals a hidden cost to branching.24
+Landauer’s Principle and Informational Erasure
+Landauer’s Principle states that the erasure of one bit of information requires a minimum dissipation of heat:   .24 This principle establishes a bridge between information theory and thermodynamics, suggesting that "information is physical".26 If we interpret the branching of the wavefunction as a process that creates new informational states, then the multiverse must pay a thermodynamic "price" for this complexity.24
+System Type
+	Information Carrier
+	Thermodynamic Cost Basis
+	Classical Computer
+	Transistor State
+	Landauer Limit (  )
+	Biological Cell
+	DNA/RNA Sequences
+	Dissipation-Driven Adaptation
+	Quantum System
+	Wavefunction Branch
+	Mutual Information Density / Collapse Cost
+	Neural Network
+	Weights/Biases
+	Free Energy Minimization / SGD Noise
+	The Interference-Collapse Coupling Principle (ICCP) extends this logic to quantum mechanics, proposing that wavefunction collapse (or branch selection) occurs at points of "maximal informational tension".5 In this model, measurement is an "erasure event" where reversible quantum structure is converted into irreversible macroscopic records.5 The spatial probability of these events is governed by "Mutual Information Density" (MID), with collapse flowing toward regions where the conversion of information to entropy is most thermodynamically efficient.5
+Branch Weighting as Resource Allocation
+If the total energy or "measure" of the universal wavefunction is finite, then each branch must compete for a portion of the "energy budget".8 This suggests that high-amplitude branches (those with large   ) are "well-funded" configurations that are more likely to persist and drive further complexification.5 Conversely, branches that require massive energy to sustain unstable or contradictory laws are "starved" of resources and effectively decohere into the vacuum.5
+This "Thermodynamic Darwinism" provides a physical grounding for the Born rule.5 We find ourselves in high-amplitude branches not because of a mathematical coincidence, but because these are the only branches that possess sufficient energetic "funding" to sustain conscious observers and stable physical regularities.12
+Dissipative Adaptation and the Origins of Order
+The work of Jeremy England at MIT provides a mathematical derivation for how energy flow drives the organization of matter.4 England's theory of "dissipative adaptation" suggests that clumps of atoms driven by an external energy source (such as the sun) will restructure themselves to maximize the dissipation of energy as heat.29
+According to England, the "fitness" of a physical configuration is determined by its ability to resonate with external drives.29 Over time, systems "restructure themselves in order to dissipate increasingly more energy".30 This process favors the emergence of attributes we associate with life: energy consumption, replication, and environmental anticipation.4
+  
+
+In this view, self-replication is simply a highly efficient mechanism for increasing dissipation—"A great way of dissipating more is to make more copies of yourself".30 When applied to the multiverse, this implies that branches whose physical laws favor dissipation and replication will naturally grow in "weight" or amplitude.4 The emergence of life is thus not a "difficult climb up Mount Improbable" but an "unavoidable tumble down Mount Inevitable".31
+The Universe as a Neural Network
+The analogy between branching physics and neural network training offers a powerful formal framework for evolutionary physics.32 Vitaly Vanchurin’s theory that "the world is a neural network" suggests that physical laws emerge through a process of learning and optimization.20 In this model, the "trainable variables" (weights and biases) correspond to the fundamental constants of physics, while the "hidden variables" represent the states of individual neurons (quantum degrees of freedom).20
+The stochastic evolution of these trainable variables near equilibrium can be approximated by the Madelung equations, which are mathematically equivalent to the Schrödinger equation.20 Further from equilibrium, the variables exhibit classical behavior governed by Hamilton-Jacobi equations.20
+Network Parameter
+	Physical Analog
+	Learning Dynamics
+	Loss Function
+	Hamiltonian/Free Energy
+	The objective to be minimized (Order/Stability)
+	Learning Rate
+	Planck’s Constant (  )
+	Scale of quantum fluctuations / exploration
+	Optimizer
+	Stochastic Gradient Descent
+	The mechanism of physical evolution
+	Weights
+	Physical Constants (  )
+	Evolved parameters that minimize global loss
+	Layers
+	Spacetime Dimensions / Scales
+	The hierarchical structure of physical reality
+	This perspective reframes the "many worlds" as parallel training runs of a global optimization algorithm.21 The branches that "converge" on a local minimum of the loss function (representing a stable, self-consistent set of laws) are those that achieve macroscopic stability.20 This explains why our specific branch exhibits mathematical regularities: they are the "learned" solutions to the problem of maintaining thermodynamic equilibrium in a complex environment.21
+The Free Energy Principle and Active Inference
+Karl Friston’s Free Energy Principle (FEP) provides a unifying mathematical framework for this selective process, spanning from the sub-atomic to the biological.3 FEP states that any self-organizing system that is distinct from its environment must minimize its "variational free energy"—a bound on the "surprise" or uncertainty it experiences.34
+In the context of quantum mechanics, the "Ze System" framework suggests that quantum phenomena (like superposition and collapse) are emergent properties of any system that builds predictive models of its sensory stream.36 Superposition represents a state of "multi-hypothetical" uncertainty, while collapse (or branching) occurs when the system must "stop the stream" to reconcile its predictions with its outcomes.36
+This process, known as "active inference," drives the system toward configurations that are most predictive of their own inputs.34 In an Everettian multiverse, this implies that branches "selected" for survival are those where the internal physical laws are most predictive and stable.3 The "Born rule" weighting can be interpreted as the "Bayesian model evidence" for a particular branch.37
+Synthesis: Thermodynamic Darwinism and the Evolved Multiverse
+The integration of these diverse frameworks—Everettian multiplicity, Smolin’s evolutionary cosmology, Zurek’s Quantum Darwinism, England’s dissipative adaptation, Vanchurin’s neural network universe, and Friston’s Free Energy Principle—yields a comprehensive theory of "Thermodynamic Darwinism".3
+In this synthesis, the universe is a high-dimensional quantum substrate that explores a vast space of possibilities through branching.1 However, this exploration is subject to rigorous physical constraints:
+1. Informational Cost: Branching is not free; it requires the dissipation of energy according to Landauer’s limit.5
+2. Thermodynamic Selection: Configurations that maximize dissipation and minimize free energy (surprise) are "funded" with more amplitude.4
+3. Classical Stability: Only states that can be redundantly encoded in the environment (pointer states) achieve macroscopic persistence.2
+4. Convergent Evolution: The physical laws we observe are the "optimal weights" learned by the universal neural network through eons of stochastic exploration.20
+The result is a multiverse where "laws" are not axioms but "habits"—stable, self-consistent patterns that have survived an intense competition for existence.4 The fine-tuning of the universe for life is not a mystery or a coincidence, but a necessary outcome of a system that evolves toward high-dissipation, low-surprise states.12
+The Future of Evolutionary Physics
+The transition from a "static" to an "evolutionary" view of physics marks a paradigm shift comparable to the move from Newtonian mechanics to relativity.20 Future research in this field is poised to explore the following avenues:
+* Experimental Validation: Testing Landauer-style heat dissipation during quantum branching events using superconducting circuits or trapped ions.10
+* Neural Network Unification: Developing a formal dual description of quantum mechanics and general relativity as the macroscopic behavior of a learning neural network.20
+* Cosmological Simulations: Using "agent-based" simulations of active inference to model the emergence of physical constants in the early universe.38
+* Information-Theoretic Gravity: Investigating how entropy production in a learning network leads to the emergence of curved spacetime and the Einstein-Hilbert action.20
+As our understanding of the "physics of forgetting" and the "thermodynamics of learning" deepens, we may find that the distinction between "dead" matter and "living" organisms is merely a matter of scale and complexity in the same universal process.4 The multiverse is not just a collection of worlds, but a single, vast, evolving mind—a system that is constantly exploring, learning, and converging upon the mathematical regularities that we perceive as the bedrock of reality.32
+________________
+Strategic Summary of Framework Interconnections
+The following table synthesizes the various theoretical frameworks discussed in this report, highlighting how they collectively resolve the tension between Everettian non-selection and evolutionary necessity.
+Framework
+	Primary Mechanism
+	Evolutionary Analog
+	Contribution to MWI
+	MWI (Everett)
+	Unitary Branching
+	Variation/Mutation
+	Provides the raw possibility space for exploration.
+	Quantum Darwinism
+	Einselection
+	Selection/Niche
+	Explains the emergence of objective classicality via redundancy.
+	CNS (Smolin)
+	Black Hole Birth
+	Reproduction
+	Proposes a mechanism for the inheritance/mutation of laws.
+	Dissipative Adaptation
+	Energy Dissipation
+	Fitness
+	Provides a thermodynamic criteria for branch "weighting."
+	Neural Network Universe
+	SGD Optimization
+	Learning/Adaptation
+	Models laws as evolved weights that minimize a loss function.
+	Free Energy Principle
+	Uncertainty Minimization
+	Active Inference
+	Defines the drive toward stable, predictive physical attractors.
+	ICCP / Landauer
+	Informational Erasure
+	Metabolism/Resource Cost
+	Establishes the finite budget for multiverse branching.
+	By weaving these disparate threads into a single narrative, we move beyond the "why" of physical law and toward a "how"—an understanding of the universe as a dynamic, self-constituting process that generates its own regularities through the very act of existing.4 The "many worlds" are not mere footnotes of probability, but the essential laboratory of a cosmos in the midst of its own creation.11
+Works cited
+1. Many-worlds interpretation - Wikipedia, accessed April 4, 2026, https://en.wikipedia.org/wiki/Many-worlds_interpretation
+2. Quantum Darwinism - Wikipedia, accessed April 4, 2026, https://en.wikipedia.org/wiki/Quantum_Darwinism
+3. (PDF) Quantum Darwinism as a Darwinian process - ResearchGate, accessed April 4, 2026, https://www.researchgate.net/publication/45893613_Quantum_Darwinism_as_a_Darwinian_process
+4. Every Life Is on Fire: How Thermodynamics Explains the Origins of Living Things, accessed April 4, 2026, https://www.researchgate.net/publication/363178577_Every_Life_Is_on_Fire_How_Thermodynamics_Explains_the_Origins_of_Living_Things
+5. The Interference–Collapse Coupling Principle | by Bill ... - Medium, accessed April 4, 2026, https://medium.com/@bill.giannakopoulos/the-interference-collapse-coupling-principle-138873171d6c
+6. Everettian Interpretations of Quantum Mechanics - Internet Encyclopedia of Philosophy, accessed April 4, 2026, https://iep.utm.edu/everett/
+7. accessed April 4, 2026, https://plato.stanford.edu/archives/spr2015/entries/qm-manyworlds/#:~:text=The%20Many%2DWorlds%20Interpretation%20(MWI,and%20thus%20from%20all%20physics.
+8. Many-Worlds Interpretation of Quantum Mechanics - Stanford Encyclopedia of Philosophy, accessed April 4, 2026, https://plato.stanford.edu/entries/qm-manyworlds/
+9. Everettian Quantum Mechanics: Many-Worlds View - Emergent Mind, accessed April 4, 2026, https://www.emergentmind.com/topics/everettian-interpretation-of-quantum-mechanics
+10. Observation of quantum Darwinism and the origin of classicality with superconducting circuits - PMC, accessed April 4, 2026, https://pmc.ncbi.nlm.nih.gov/articles/PMC12315987/
+11. Quantum Mechanics, Many Worlds and Free Energy — Three Body ..., accessed April 4, 2026, https://threebody.capital/blog/2019/11/1/quantum-mechanics-many-worlds-and-free-energy-a-probabilistic-multiple-paths-approach-to-investment-management
+12. (PDF) Many-Worlds Interpretation of Quantum Theory, Mesoscopic ..., accessed April 4, 2026, https://www.researchgate.net/publication/235696916_Many-Worlds_Interpretation_of_Quantum_Theory_Mesoscopic_Anthropic_Principle_and_Biological_Evolution
+13. Branch-counting in the Everett interpretation of quantum mechanics | Proceedings A | The Royal Society, accessed April 4, 2026, https://royalsocietypublishing.org/rspa/article/477/2255/20210600/82445/Branch-counting-in-the-Everett-interpretation-of
+14. Probability 1 Simon Saunders The Everett interpretation of quantum mechanics is, inter alia, an in - PhilSci-Archive, accessed April 4, 2026, https://philsci-archive.pitt.edu/19362/1/Probability%20Pittsburgh.pdf
+15. Research Notes - The Born Rule — Derivation Attempts and Their Limits, accessed April 4, 2026, https://unfinishablemap.org/research/born-rule-derivation-attempts-2026-03-14/
+16. Why Probability in Quantum Mechanics is Given by the Wave Function Squared - Sean Carroll, accessed April 4, 2026, https://www.preposterousuniverse.com/blog/2014/07/24/why-probability-in-quantum-mechanics-is-given-by-the-wave-function-squared/comment-page-4/
+17. Global Branching and Everettian Probability: A ... - PhilSci-Archive, accessed April 4, 2026, https://philsci-archive.pitt.edu/27013/1/mwi-selflocating2025fop.pdf
+18. Entropy-Induced Wavefunction Collapse: A Thermodynamic Resolution of the Quantum Measurement Problem - viXra.org, accessed April 4, 2026, https://vixra.org/pdf/2505.0152v1.pdf
+19. Every Life on Fire: How Thermodynamics Explains the Origins of Living Things, accessed April 4, 2026, https://pubs.aip.org/aapt/ajp/article/89/6/655/1056400/Every-Life-on-Fire-How-Thermodynamics-Explains-the
+20. (PDF) The World as a Neural Network - ResearchGate, accessed April 4, 2026, https://www.researchgate.net/publication/346440148_The_World_as_a_Neural_Network
+21. Interpretation of “Neural Network as the World” - Shmaes - Physics - WordPress.com, accessed April 4, 2026, https://shmaesphysics.wordpress.com/2020/09/14/interpretation-of-neural-network-as-the-world/
+22. [0903.5082] Quantum Darwinism - arXiv, accessed April 4, 2026, https://arxiv.org/abs/0903.5082
+23. Could Jeremy England's Dissipation-Driven Adaptive Organization theory be a physical analog to Jon Conway's Game of Life??? - Reddit, accessed April 4, 2026, https://www.reddit.com/r/Physics/comments/3fhbw8/could_jeremy_englands_dissipationdriven_adaptive/
+24. Landauer's principle - Wikipedia, accessed April 4, 2026, https://en.wikipedia.org/wiki/Landauer%27s_principle
+25. The physics of forgetting | QUANTUMLANDAUER Project | Results in Brief | FP7 - CORDIS, accessed April 4, 2026, https://cordis.europa.eu/article/id/190967-the-physics-of-forgetting
+26. Generalization of the Landauer Principle for Computing Devices Based on Many-Valued Logic - PMC, accessed April 4, 2026, https://pmc.ncbi.nlm.nih.gov/articles/PMC7514495/
+27. Landauer Principle and Thermodynamics of Computation - arXiv, accessed April 4, 2026, https://arxiv.org/html/2506.10876v2
+28. Landauer's principle, accessed April 4, 2026, https://aarnphm.xyz/thoughts/Landauer's-principle
+29. Origins of Life: A Means to a Thermodynamically Favorable End? - Yale Scientific Magazine, accessed April 4, 2026, https://www.yalescientific.org/2014/07/origins-of-life-a-means-to-a-thermodynamically-favorable-end/
+30. A New Physics Theory of Life - Esalq/USP, accessed April 4, 2026, https://www.esalq.usp.br/lepse/imgs/conteudo_thumb/A-New-Physics-Theory-of-Life.pdf?utm_source=chatgpt.com
+31. Dissipation-Driven Adaptive Organization: Is Jeremy England The Next Charles Darwin?, accessed April 4, 2026, https://santitafarella.wordpress.com/2014/01/27/dissipation-driven-adaptive-organization-is-jeremy-england-the-next-charles-darwin/
+32. Vitaly Vanchurin: The Universe Is a Neural Network That Learns - Apple Podcasts, accessed April 4, 2026, https://podcasts.apple.com/ru/podcast/vitaly-vanchurin-the-universe-is-a-neural-network/id1521758802?i=1000748938044&l=uk
+33. Our Universe Is A Massive Neural Network: Here's Why | by Laszlo Fazekas | Geek Culture, accessed April 4, 2026, https://medium.com/geekculture/our-universe-is-a-massive-neural-network-heres-why-a0d5a5787230
+34. Free energy principle - Wikipedia, accessed April 4, 2026, https://en.wikipedia.org/wiki/Free_energy_principle
+35. Critique of the "Free Energy Principle" of Consciousness, accessed April 4, 2026, https://www.scivisionpub.com/pdfs/critique-of-the-free-energy-principle-of-consciousness-4017.pdf
+36. Predictive Inference and the Origin of Quantum Phenomena[v1] | Preprints.org, accessed April 4, 2026, https://www.preprints.org/manuscript/202601.1255/v1
+37. Universal Darwinism As a Process of Bayesian Inference - Frontiers, accessed April 4, 2026, https://www.frontiersin.org/journals/systems-neuroscience/articles/10.3389/fnsys.2016.00049/full
+38. #1066 Karl Friston: The Free Energy Principle, Culture, 4E Cognition, and Physics — The Dissenter Podcast - Official, accessed April 4, 2026, https://www.thedissenter.net/podcast/1066-karl-friston-the-free-energy-principle-culture-4e-cognition-and-physics/
+39. Knowing one's place: a free-energy approach to pattern regulation, accessed April 4, 2026, https://royalsocietypublishing.org/rsif/article/12/105/20141383/35345/Knowing-one-s-place-a-free-energy-approach-to
