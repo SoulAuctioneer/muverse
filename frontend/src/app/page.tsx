@@ -2,20 +2,22 @@
 
 import { useState } from "react";
 import TheoryGraphView from "@/components/theory-graph/TheoryGraphView";
+import MathExplorer from "@/components/math-explorer/MathExplorer";
 import AgentPanel from "@/components/agent-panel/AgentPanel";
 import SimulationLab from "@/components/simulation-lab/SimulationLab";
 import PaperEditor from "@/components/paper-editor/PaperEditor";
 
-type Tab = "theory" | "agents" | "simulations" | "paper";
+type Tab = "theory" | "math" | "simulations" | "paper" | "agents";
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState<Tab>("theory");
 
   const tabs: { id: Tab; label: string; desc: string }[] = [
     { id: "theory", label: "Theory Graph", desc: "Axioms, derivations, predictions" },
-    { id: "agents", label: "Agents", desc: "Theorist, Critic, Simulator, Writer" },
+    { id: "math", label: "Math", desc: "Derivation chain with equations" },
     { id: "simulations", label: "Simulations", desc: "Branch ensemble, NN analog, Langevin" },
-    { id: "paper", label: "Paper", desc: "Outline, draft, review" },
+    { id: "paper", label: "Paper", desc: "Full rendered paper with LaTeX" },
+    { id: "agents", label: "Agents", desc: "Theorist, Critic, Simulator, Writer" },
   ];
 
   return (
@@ -51,9 +53,10 @@ export default function Home() {
 
       <main className="flex-1 p-6">
         {activeTab === "theory" && <TheoryGraphView />}
-        {activeTab === "agents" && <AgentPanel />}
+        {activeTab === "math" && <MathExplorer />}
         {activeTab === "simulations" && <SimulationLab />}
         {activeTab === "paper" && <PaperEditor />}
+        {activeTab === "agents" && <AgentPanel />}
       </main>
     </div>
   );

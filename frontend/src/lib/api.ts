@@ -64,6 +64,19 @@ export interface PaperOutline {
   sections: PaperSection[];
 }
 
+export interface DerivationEquation {
+  label: string;
+  latex: string;
+}
+
+export interface DerivationStep {
+  id: string;
+  title: string;
+  subtitle: string;
+  description: string;
+  equations: DerivationEquation[];
+}
+
 export const api = {
   theory: {
     get: () => fetchJSON("/api/theory/"),
@@ -100,6 +113,24 @@ export const api = {
     outline: () => fetchJSON<PaperOutline>("/api/paper/outline"),
     sections: () => fetchJSON<PaperSection[]>("/api/paper/sections"),
     completeness: () => fetchJSON("/api/paper/completeness"),
+    fullLatex: async (): Promise<string> => {
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 300_000);
+      try {
+        const res = await fetch(`${API_BASE}/api/paper/full-latex`, {
+          signal: controller.signal,
+        });
+        if (!res.ok) throw new Error(`API error: ${res.status}`);
+        return res.text();
+      } finally {
+        clearTimeout(timeout);
+      }
+    },
+  },
+
+  math: {
+    derivations: () =>
+      fetchJSON<{ steps: DerivationStep[] }>("/api/math/derivations"),
   },
 };
 

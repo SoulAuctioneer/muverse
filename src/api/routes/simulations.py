@@ -77,6 +77,25 @@ def _run_sim(name: str, params: dict):
                 },
                 "error": None,
             }
+
+        elif name == "sim4":
+            from src.simulations.sim4_born_deviation import Sim4Config, run_simulation
+            config = Sim4Config(**{k: v for k, v in params.items() if hasattr(Sim4Config, k)})
+            result = run_simulation(config)
+            _sim_state[name] = {
+                "status": "completed",
+                "metrics": {
+                    "temperatures": result.temperatures.tolist(),
+                    "born_probs": result.born_probs.tolist(),
+                    "thermal_state_probs": result.thermal_state_probs.tolist(),
+                    "td_probs": result.td_probs.tolist(),
+                    "residual_norm": result.residual_norm.tolist(),
+                    "td_born_residual_norm": result.td_born_residual_norm.tolist(),
+                    "energies": result.energies.tolist(),
+                    "euclidean_actions": result.euclidean_actions.tolist(),
+                },
+                "error": None,
+            }
         else:
             _sim_state[name] = {"status": "failed", "metrics": {}, "error": f"Unknown simulation: {name}"}
 
@@ -124,14 +143,43 @@ async def list_simulations():
         "sim1": {
             "name": "Branch Ensemble under Boltzmann Constraint",
             "description": "Tests whether Gibbs weighting recovers Born rule statistics",
+            "configurable_params": {
+                "n_initial_branches": {"default": 16, "type": "int", "label": "Initial branches"},
+                "n_beta_points": {"default": 50, "type": "int", "label": "Beta points"},
+                "beta_range_min": {"default": 0.01, "type": "float", "label": "Beta min"},
+                "beta_range_max": {"default": 10.0, "type": "float", "label": "Beta max"},
+                "n_trials": {"default": 20, "type": "int", "label": "Trials"},
+            },
         },
         "sim2": {
             "name": "Neural Network Analog Model",
             "description": "Tests SGD-Gibbs equivalence at different effective temperatures",
+            "configurable_params": {
+                "n_branches": {"default": 8, "type": "int", "label": "Branches"},
+                "n_epochs": {"default": 200, "type": "int", "label": "Epochs"},
+                "n_trials": {"default": 10, "type": "int", "label": "Trials"},
+                "hidden_dim": {"default": 32, "type": "int", "label": "Hidden dim"},
+            },
         },
         "sim3": {
             "name": "Quantum Langevin Dynamics",
             "description": "Tests temperature-dependent branch probabilities",
+            "configurable_params": {
+                "n_levels": {"default": 6, "type": "int", "label": "Energy levels"},
+                "coupling_strength": {"default": 0.1, "type": "float", "label": "Coupling strength"},
+                "t_max": {"default": 100.0, "type": "float", "label": "Max time"},
+                "n_trials": {"default": 5, "type": "int", "label": "Trials"},
+            },
+        },
+        "sim4": {
+            "name": "Born Rule Deviation Test (P1)",
+            "description": "Distinguishes Thermodynamic Darwinism from standard QM predictions",
+            "configurable_params": {
+                "n_levels": {"default": 4, "type": "int", "label": "Energy levels"},
+                "energy_scale": {"default": 1.0, "type": "float", "label": "Energy scale"},
+                "n_temperature_points": {"default": 40, "type": "int", "label": "Temp points"},
+                "asymmetry": {"default": 0.3, "type": "float", "label": "Asymmetry"},
+            },
         },
     }
     for key in sims:

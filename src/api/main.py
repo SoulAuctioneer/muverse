@@ -9,6 +9,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from src.api.routes.agents import router as agents_router
+from src.api.routes.math import router as math_router
 from src.api.routes.paper import router as paper_router
 from src.api.routes.simulations import router as simulations_router
 from src.api.routes.theory import router as theory_router
@@ -44,6 +45,7 @@ app.include_router(theory_router, prefix="/api/theory", tags=["theory"])
 app.include_router(agents_router, prefix="/api/agents", tags=["agents"])
 app.include_router(simulations_router, prefix="/api/simulations", tags=["simulations"])
 app.include_router(paper_router, prefix="/api/paper", tags=["paper"])
+app.include_router(math_router, prefix="/api/math", tags=["math"])
 app.include_router(ws_router, prefix="/ws", tags=["websocket"])
 
 
