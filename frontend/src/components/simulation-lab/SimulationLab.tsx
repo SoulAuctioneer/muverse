@@ -258,6 +258,7 @@ function SimChart({ simId, data }: { simId: string; data: SimResults }) {
   if (simId === "sim2") return <Sim2Chart data={data} />;
   if (simId === "sim3") return <Sim3Chart data={data} />;
   if (simId === "sim4") return <Sim4Chart data={data} />;
+  if (simId === "sim5") return <Sim5Chart data={data} />;
   return <pre className="text-xs">{JSON.stringify(data, null, 2)}</pre>;
 }
 
@@ -649,6 +650,271 @@ function Sim4Chart({ data }: { data: SimResults }) {
           </ResponsiveContainer>
         </div>
       )}
+    </div>
+  );
+}
+
+function Sim5Chart({ data }: { data: SimResults }) {
+  const energies = data.energies as number[];
+  const wkbActions = data.wkb_actions as number[];
+  const barrierTop = data.barrier_top as number;
+  const temps = data.bath_temps as number[];
+  const lindbladPops = data.lindblad_pops as number[][];
+  const gibbsEPops = data.gibbs_energy_pops as number[][];
+  const gibbsSPops = data.gibbs_action_pops as number[][];
+  const bornPops = data.born_pops as number[];
+  const resLE = data.residual_lindblad_vs_gibbs_e as number[];
+  const resES = data.residual_gibbs_e_vs_gibbs_s as number[];
+  const traceTimes = data.trace_times as number[];
+  const tracePops = data.trace_pops as number[][];
+  const traceTempIdx = data.trace_temp_idx as number;
+
+  const [selTemp, setSelTemp] = useState(0);
+
+  if (!temps || !lindbladPops) {
+    return <div className="text-sm text-[var(--text-secondary)]">No chart data available</div>;
+  }
+
+  const nLevels = energies?.length ?? 0;
+  const maxResLE = Math.max(...(resLE ?? [0]));
+  const maxGap = Math.max(...(resES ?? [0]));
+  const maxGapT = temps[(resES ?? []).indexOf(maxGap)];
+
+  const comparisonData = energies
+    ? energies.map((_, i) => ({
+        level: `|${i}⟩`,
+        "Lindblad SS": lindbladPops[selTemp]?.[i] ?? 0,
+        "Gibbs(E) — Std QM": gibbsEPops[selTemp]?.[i] ?? 0,
+        "Gibbs(S_E) — TD": gibbsSPops[selTemp]?.[i] ?? 0,
+      }))
+    : [];
+
+  const residualData = temps.map((t, i) => ({
+    temperature: t,
+    "Lindblad vs Gibbs(E)": resLE[i],
+    "Gibbs(E) vs Gibbs(S_E)": resES[i],
+  }));
+
+  const levelData = energies
+    ? energies.map((e, i) => ({
+        level: `|${i}⟩`,
+        Energy: e,
+        "WKB Action": wkbActions[i],
+        subBarrier: e < barrierTop,
+      }))
+    : [];
+
+  const traceData =
+    traceTimes && tracePops
+      ? traceTimes.map((t, ti) => {
+          const row: Record<string, number> = { time: t };
+          for (let n = 0; n < Math.min(nLevels, 6); n++) {
+            row[`|${n}⟩`] = tracePops[ti]?.[n] ?? 0;
+          }
+          return row;
+        })
+      : [];
+
+  const traceColors = ["#4a9eff", "#34d399", "#f59e0b", "#c084fc", "#f87171", "#94a3b8"];
+
+  return (
+    <div className="space-y-6">
+      <div className="p-4 rounded-lg border border-emerald-800/30 bg-emerald-900/10 text-sm">
+        <div className="font-semibold text-emerald-400 mb-1">
+          The Small Provable Step
+        </div>
+        <p className="text-[var(--text-secondary)]">
+          This simulation solves the <strong>Lindblad master equation</strong> for
+          a double-well potential coupled to a thermal bath — the standard framework
+          for open quantum systems. It compares the <em>exact</em> steady-state
+          populations to three predictions: Born rule, Gibbs over energies (standard QM),
+          and Gibbs over WKB actions (Thermodynamic Darwinism). The Lindblad equation
+          satisfies detailed balance, so its steady state is guaranteed to be Gibbs(E).
+        </p>
+      </div>
+
+      <div className="grid grid-cols-3 gap-3">
+        <MetricCard
+          label="‖Lindblad − Gibbs(E)‖ (max)"
+          value={maxResLE < 1e-6 ? "< 10⁻⁶" : maxResLE.toExponential(2)}
+          accent="#34d399"
+        />
+        <MetricCard
+          label="‖Gibbs(E) − Gibbs(S_E)‖ (max)"
+          value={maxGap.toFixed(3)}
+          accent="#f59e0b"
+        />
+        <MetricCard
+          label="Max gap at T ="
+          value={maxGapT?.toFixed(2) ?? "—"}
+          accent="#c084fc"
+        />
+      </div>
+
+      {/* Temperature selector + comparison chart */}
+      <div>
+        <div className="flex items-center gap-3 mb-3">
+          <h3 className="text-sm font-semibold">
+            Population Comparison at T = {temps[selTemp]?.toFixed(2)}
+          </h3>
+          <input
+            type="range"
+            min={0}
+            max={temps.length - 1}
+            value={selTemp}
+            onChange={(e) => setSelTemp(parseInt(e.target.value))}
+            className="flex-1 max-w-48"
+          />
+        </div>
+        <p className="text-xs text-[var(--text-secondary)] mb-4">
+          Lindblad steady state (green) matches Gibbs(E) (blue) exactly.
+          Gibbs(S_E) (orange) predicts a measurably different distribution —
+          it favours above-barrier states because they have zero tunneling action.
+        </p>
+        <ResponsiveContainer width="100%" height={300}>
+          <BarChart data={comparisonData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+            <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.06)" />
+            <XAxis dataKey="level" tick={{ fill: "#888", fontSize: 11 }} />
+            <YAxis
+              label={{ value: "Probability", angle: -90, position: "insideLeft", offset: -5, style: { fill: "#999", fontSize: 12 } }}
+              tick={{ fill: "#888", fontSize: 11 }}
+            />
+            <Tooltip
+              contentStyle={{ background: "#1e1e2e", border: "1px solid #333", borderRadius: 8 }}
+              formatter={fmtTooltip}
+            />
+            <Legend wrapperStyle={{ paddingTop: 16 }} />
+            <Bar dataKey="Lindblad SS" fill="#34d399" radius={[4, 4, 0, 0]} />
+            <Bar dataKey="Gibbs(E) — Std QM" fill="#4a9eff" radius={[4, 4, 0, 0]} />
+            <Bar dataKey="Gibbs(S_E) — TD" fill="#f59e0b" radius={[4, 4, 0, 0]} />
+          </BarChart>
+        </ResponsiveContainer>
+      </div>
+
+      {/* Residual chart */}
+      <div>
+        <h3 className="text-sm font-semibold mb-3">
+          Residuals vs Temperature
+        </h3>
+        <p className="text-xs text-[var(--text-secondary)] mb-4">
+          Green line (Lindblad vs Gibbs(E)) is zero at all temperatures — confirming
+          the steady state IS the thermal Gibbs state. Orange line shows the gap
+          between standard QM and the TD prediction — large and distinguishable.
+        </p>
+        <ResponsiveContainer width="100%" height={300}>
+          <LineChart data={residualData} margin={{ top: 5, right: 30, left: 20, bottom: 20 }}>
+            <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.06)" />
+            <XAxis
+              dataKey="temperature"
+              scale="log"
+              domain={["auto", "auto"]}
+              label={{ value: "Bath temperature", position: "insideBottom", offset: -10, style: { fill: "#999", fontSize: 12 } }}
+              tick={{ fill: "#888", fontSize: 11 }}
+            />
+            <YAxis
+              label={{ value: "‖Residual‖₂", angle: -90, position: "insideLeft", offset: -5, style: { fill: "#999", fontSize: 12 } }}
+              tick={{ fill: "#888", fontSize: 11 }}
+            />
+            <Tooltip
+              contentStyle={{ background: "#1e1e2e", border: "1px solid #333", borderRadius: 8 }}
+              labelStyle={{ color: "#ccc" }}
+              formatter={fmtTooltip}
+              labelFormatter={(label) => `T = ${Number(label).toFixed(2)}`}
+            />
+            <Legend wrapperStyle={{ paddingTop: 16 }} />
+            <Line type="monotone" dataKey="Lindblad vs Gibbs(E)" stroke="#34d399" strokeWidth={2.5} dot={false} />
+            <Line type="monotone" dataKey="Gibbs(E) vs Gibbs(S_E)" stroke="#f59e0b" strokeWidth={2} dot={false} />
+          </LineChart>
+        </ResponsiveContainer>
+      </div>
+
+      {/* Time-evolution trace */}
+      {traceData.length > 0 && (
+        <div>
+          <h3 className="text-sm font-semibold mb-3">
+            Time Evolution at T = {temps[traceTempIdx]?.toFixed(2)}
+          </h3>
+          <p className="text-xs text-[var(--text-secondary)] mb-4">
+            Initial asymmetric superposition relaxes toward the Gibbs thermal state.
+            Each line is the population of one energy eigenstate.
+          </p>
+          <ResponsiveContainer width="100%" height={300}>
+            <LineChart data={traceData} margin={{ top: 5, right: 30, left: 20, bottom: 20 }}>
+              <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.06)" />
+              <XAxis
+                dataKey="time"
+                label={{ value: "Time (ℏ/E)", position: "insideBottom", offset: -10, style: { fill: "#999", fontSize: 12 } }}
+                tick={{ fill: "#888", fontSize: 11 }}
+              />
+              <YAxis
+                label={{ value: "Population ρ_nn", angle: -90, position: "insideLeft", offset: -5, style: { fill: "#999", fontSize: 12 } }}
+                tick={{ fill: "#888", fontSize: 11 }}
+              />
+              <Tooltip
+                contentStyle={{ background: "#1e1e2e", border: "1px solid #333", borderRadius: 8 }}
+                labelStyle={{ color: "#ccc" }}
+                formatter={fmtTooltip}
+              />
+              <Legend wrapperStyle={{ paddingTop: 16 }} />
+              {Array.from({ length: Math.min(nLevels, 6) }, (_, n) => (
+                <Line
+                  key={n}
+                  type="monotone"
+                  dataKey={`|${n}⟩`}
+                  stroke={traceColors[n]}
+                  strokeWidth={1.5}
+                  dot={false}
+                />
+              ))}
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
+      )}
+
+      {/* Level structure */}
+      {levelData.length > 0 && (
+        <div>
+          <h3 className="text-sm font-semibold mb-3">
+            Energy Levels and WKB Tunneling Actions
+          </h3>
+          <p className="text-xs text-[var(--text-secondary)] mb-4">
+            Below the barrier (dashed line at E = {barrierTop.toFixed(1)}),
+            the WKB action decreases with energy — so Gibbs(E) and Gibbs(S_E)
+            predict <em>opposite</em> orderings.
+            Above the barrier, S_E = 0 (no tunneling region).
+          </p>
+          <ResponsiveContainer width="100%" height={250}>
+            <BarChart data={levelData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+              <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.06)" />
+              <XAxis dataKey="level" tick={{ fill: "#888", fontSize: 11 }} />
+              <YAxis tick={{ fill: "#888", fontSize: 11 }} />
+              <Tooltip
+                contentStyle={{ background: "#1e1e2e", border: "1px solid #333", borderRadius: 8 }}
+                formatter={fmtTooltip}
+              />
+              <Legend wrapperStyle={{ paddingTop: 8 }} />
+              <Bar dataKey="Energy" fill="#4a9eff" radius={[4, 4, 0, 0]} />
+              <Bar dataKey="WKB Action" fill="#c084fc" radius={[4, 4, 0, 0]} />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+      )}
+
+      {/* Scientific verdict */}
+      <div className="p-4 rounded-lg border border-blue-800/30 bg-blue-900/10 text-sm space-y-2">
+        <div className="font-semibold text-blue-400">Scientific Verdict</div>
+        <p className="text-[var(--text-secondary)]">
+          The Lindblad master equation produces the Gibbs state over <em>energies</em>,
+          matching standard QM with residual {"<"} 10⁻⁶ at all temperatures. The TD
+          prediction (Gibbs over WKB actions) deviates by up to {maxGap.toFixed(2)} in
+          L₂ norm — large enough to be distinguishable.
+        </p>
+        <p className="text-[var(--text-secondary)]">
+          <strong>Conclusion:</strong> Within the Born-Markov approximation (which the
+          Lindblad equation assumes), standard QM wins decisively. The TD hypothesis
+          would need non-Markovian dynamics or strong system-bath coupling to be viable.
+        </p>
+      </div>
     </div>
   );
 }

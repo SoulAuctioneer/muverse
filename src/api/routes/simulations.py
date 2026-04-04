@@ -96,6 +96,31 @@ def _run_sim(name: str, params: dict):
                 },
                 "error": None,
             }
+        elif name == "sim5":
+            from src.simulations.sim5_lindblad_test import Sim5Config, run_simulation
+            config = Sim5Config(**{k: v for k, v in params.items() if hasattr(Sim5Config, k)})
+            result = run_simulation(config)
+            _sim_state[name] = {
+                "status": "completed",
+                "metrics": {
+                    "energies": result.energies.tolist(),
+                    "wkb_actions": result.wkb_actions.tolist(),
+                    "barrier_top": float(result.barrier_top),
+                    "bath_temps": result.bath_temps.tolist(),
+                    "lindblad_pops": result.lindblad_pops.tolist(),
+                    "gibbs_energy_pops": result.gibbs_energy_pops.tolist(),
+                    "gibbs_action_pops": result.gibbs_action_pops.tolist(),
+                    "born_pops": result.born_pops.tolist(),
+                    "residual_lindblad_vs_gibbs_e": result.residual_lindblad_vs_gibbs_e.tolist(),
+                    "residual_gibbs_e_vs_gibbs_s": result.residual_gibbs_e_vs_gibbs_s.tolist(),
+                    "x_grid": result.x_grid.tolist(),
+                    "potential": result.potential.tolist(),
+                    "trace_temp_idx": result.trace_temp_idx,
+                    "trace_times": result.trace_times.tolist() if result.trace_times is not None else [],
+                    "trace_pops": result.trace_pops.tolist() if result.trace_pops is not None else [],
+                },
+                "error": None,
+            }
         else:
             _sim_state[name] = {"status": "failed", "metrics": {}, "error": f"Unknown simulation: {name}"}
 
@@ -179,6 +204,16 @@ async def list_simulations():
                 "energy_scale": {"default": 1.0, "type": "float", "label": "Energy scale"},
                 "n_temperature_points": {"default": 40, "type": "int", "label": "Temp points"},
                 "asymmetry": {"default": 0.3, "type": "float", "label": "Asymmetry"},
+            },
+        },
+        "sim5": {
+            "name": "Lindblad Master Equation Test",
+            "description": "Tests TD vs standard QM using exact open-quantum dynamics (double-well + thermal bath)",
+            "configurable_params": {
+                "n_levels": {"default": 8, "type": "int", "label": "Energy levels"},
+                "barrier_height": {"default": 6.0, "type": "float", "label": "Barrier height"},
+                "well_separation": {"default": 1.8, "type": "float", "label": "Well separation"},
+                "asymmetry": {"default": 0.15, "type": "float", "label": "Asymmetry"},
             },
         },
     }
