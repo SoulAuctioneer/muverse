@@ -50,61 +50,78 @@ def build_seed_theory() -> TheoryState:
         Axiom(
             label="A3",
             statement=(
-                "Under Wick rotation (it = ℏβ), the MWI path integral over branches "
-                "transforms from phase weights exp(iS/ℏ) to Boltzmann weights exp(−S_E/ℏ), "
-                "yielding a thermal partition function over branch-space."
+                "FALSIFIED. Originally postulated that under Wick rotation (it = ℏβ), "
+                "the MWI path integral transforms from phase weights exp(iS/ℏ) to "
+                "Boltzmann weights exp(−S_E/ℏ), yielding a thermal partition function "
+                "over branch-space. Disproven by the Feynman-Vernon influence functional "
+                "analysis: decoherence depends on path differences and bath correlations, "
+                "not on Euclidean action. Confirmed numerically by Sim5 (Lindblad steady "
+                "state = Gibbs(E), not Gibbs(S_E)) and Sim6 (HEOM non-Markovian "
+                "corrections point away from the TD prediction)."
             ),
             formal_expression=(
                 r"\sum_{\text{branches}} e^{iS/\hbar} "
                 r"\xrightarrow{\text{Wick}} "
                 r"\sum_{\text{branches}} e^{-S_E/\hbar}"
+                r"\quad\textbf{[FALSIFIED]}"
             ),
-            status=AxiomStatus.POSTULATED,
+            status=AxiomStatus.FALSIFIED,
             source_document=SOURCE_CONV,
-            tags=["Wick rotation", "partition function", "Gibbs"],
+            tags=["Wick rotation", "partition function", "Gibbs", "falsified"],
         ),
         Axiom(
             label="A4",
             statement=(
-                "Decoherence-induced branching preserves the Jarzynski double stochasticity "
-                "condition, while energetically dissipative branching violates it. Branches "
-                "that violate Jarzynski symmetry are exactly those suppressed under the "
-                "energy-constrained partition function."
+                "CONTESTED. Claims (a) and (b) verified by Sim8; claim (c) broken. "
+                "(a) Decoherence-induced branching (unitary + partial trace) preserves "
+                "double stochasticity — confirmed as an instance of Birkhoff's theorem. "
+                "(b) Dissipative branching breaks double stochasticity — confirmed "
+                "numerically. (c) Jarzynski-violating branches are suppressed under the "
+                "energy-constrained partition function — this claim depends on the "
+                "Gibbs(S_E) weighting from falsified A3 and has no surviving derivation."
             ),
             formal_expression=(
                 r"\langle e^{-\beta W} \rangle = e^{-\beta \Delta F} "
                 r"\quad\text{(Jarzynski equality)}"
+                r"\quad\textbf{[CONTESTED — (c) depends on A3]}"
             ),
-            status=AxiomStatus.POSTULATED,
+            status=AxiomStatus.CONTESTED,
             source_document=SOURCE_CONV,
-            tags=["Jarzynski", "decoherence", "dissipation", "non-equilibrium"],
+            tags=["Jarzynski", "decoherence", "dissipation", "non-equilibrium",
+                  "partially verified", "contested"],
         ),
         Axiom(
             label="A5",
             statement=(
-                "The Born rule |ψ|² emerges as the squared Euclidean amplitude in the "
-                "thermal ensemble at zero temperature, not as an independent axiom. "
-                "It is a thermodynamic consequence of finite-energy branch weighting."
+                "CONTESTED. Originally claimed the Born rule |ψ|² emerges as the "
+                "squared Euclidean amplitude in the thermal ensemble at zero temperature. "
+                "The derivation via Wick rotation (D1) is broken because its premise A3 "
+                "is falsified. The Born rule's emergence from thermodynamic constraints "
+                "remains an open question requiring a new derivation path — possibly "
+                "through information-theoretic bounds on pointer-state redundancy."
             ),
             formal_expression=(
                 r"P(\text{branch}_i) = \frac{e^{-S_{E,i}/\hbar}}{Z} "
                 r"\xrightarrow{T \to 0} |\psi_i|^2"
+                r"\quad\textbf{[CONTESTED — derivation broken]}"
             ),
-            status=AxiomStatus.POSTULATED,
+            status=AxiomStatus.CONTESTED,
             source_document=SOURCE_CONV,
-            tags=["Born rule", "emergent", "Gibbs"],
+            tags=["Born rule", "emergent", "Gibbs", "contested"],
         ),
         Axiom(
             label="A6",
             statement=(
                 "Branching is not informationally free. Each branching event incurs a "
                 "thermodynamic cost bounded below by Landauer's limit: kT ln 2 per bit "
-                "of new information created."
+                "of new information created. This is an established theorem of "
+                "statistical mechanics, experimentally confirmed to the Landauer limit "
+                "(Berut et al., Nature 2012)."
             ),
             formal_expression=r"Q_{\min} = k_B T \ln 2 \quad\text{per bit}",
-            status=AxiomStatus.POSTULATED,
+            status=AxiomStatus.DERIVED,
             source_document=SOURCE_REPORT,
-            tags=["Landauer", "information", "thermodynamic cost"],
+            tags=["Landauer", "information", "thermodynamic cost", "established"],
         ),
         Axiom(
             label="A7",
@@ -125,15 +142,43 @@ def build_seed_theory() -> TheoryState:
         Axiom(
             label="A8",
             statement=(
-                "Branches that persist most robustly are not lowest-energy but those with "
-                "the best free-energy balance F = E − TS: energetically viable AND "
-                "internally self-consistent (high entropy). This parallels SGD converging "
-                "to wide flat minima, not the global minimum."
+                "CONTESTED. Branches that persist most robustly are not lowest-energy "
+                "but those with the best free-energy balance F = E − TS: energetically "
+                "viable AND internally self-consistent (high entropy). This parallels "
+                "SGD converging to wide flat minima, not the global minimum. The only "
+                "derivation (D2) depends on falsified A3; the free-energy selection "
+                "mechanism has no surviving derivation path from first principles."
             ),
-            formal_expression=r"F = E - TS, \quad \text{branch weight} \propto e^{-F/k_B T}",
-            status=AxiomStatus.POSTULATED,
+            formal_expression=(
+                r"F = E - TS, \quad \text{branch weight} \propto e^{-F/k_B T}"
+                r"\quad\textbf{[CONTESTED — D2 broken]}"
+            ),
+            status=AxiomStatus.CONTESTED,
             source_document=SOURCE_CONV,
-            tags=["free energy", "entropy", "flat minima", "selection"],
+            tags=["free energy", "entropy", "flat minima", "selection", "contested"],
+        ),
+        Axiom(
+            label="A9",
+            statement=(
+                "The number of redundant pointer-state copies that an environment "
+                "can support is bounded by the Bekenstein bound on the environment's "
+                "information capacity and the Landauer cost of each copy. The "
+                "encoding cost per copy I_i = S(ρ_{E_k|i}) is the von Neumann "
+                "entropy of the environment fragment conditioned on pointer state "
+                "|i⟩ — determined by the system-environment Hamiltonian H_SE, not "
+                "by Born probabilities. Pointer states with lower I_i achieve "
+                "higher redundancy. The information-selected probability is "
+                "P_i^info = (1/I_i) / Σ_j(1/I_j)."
+            ),
+            formal_expression=(
+                r"I_i = S(\rho_{E_k|i}), \quad "
+                r"N_{\max,i} = \frac{E_{\text{env}}}{I_i \cdot k_B T \ln 2}, \quad "
+                r"P_i^{\text{info}} = \frac{1/I_i}{\sum_j 1/I_j}"
+            ),
+            status=AxiomStatus.POSTULATED,
+            source_document="Phase A derivation",
+            tags=["Landauer", "Bekenstein", "Quantum Darwinism", "pointer states",
+                  "information", "Phase A", "non-circular"],
         ),
     ]
 
@@ -179,10 +224,13 @@ def build_seed_theory() -> TheoryState:
                     ),
                 ),
             ],
-            verification_status=VerificationStatus.UNVERIFIED,
+            verification_status=VerificationStatus.CRITIQUED,
             agent_notes=(
-                "The T→0 limit step requires showing that the squared Euclidean "
-                "amplitude equals |ψ|². This is the key step to verify for circularity."
+                "BROKEN: Premise A3 (Wick rotation = decoherence) has been falsified "
+                "by the influence functional analysis and Sim5/Sim6. The Feynman-Vernon "
+                "formalism shows that decoherence suppresses path *differences* via bath "
+                "correlations, not individual paths via Euclidean action. This derivation "
+                "chain is invalid as stated. A new path to the Born rule is needed."
             ),
         ),
         Derivation(
@@ -205,7 +253,14 @@ def build_seed_theory() -> TheoryState:
                     expression=r"\text{weight} \propto e^{-(E - TS)/k_B T} = e^{-F/k_B T}",
                 ),
             ],
-            verification_status=VerificationStatus.UNVERIFIED,
+            verification_status=VerificationStatus.CRITIQUED,
+            agent_notes=(
+                "BROKEN: Depends on falsified A3. The Euclidean action weighting that "
+                "connects branching cost to the partition function is invalid. However, "
+                "the Landauer cost component (A6) survives independently and may support "
+                "a revised version of free-energy selection via information-theoretic "
+                "constraints rather than Wick-rotated action."
+            ),
         ),
         Derivation(
             label="D3",
@@ -233,8 +288,65 @@ def build_seed_theory() -> TheoryState:
                     ),
                 ),
             ],
+            verification_status=VerificationStatus.CRITIQUED,
+            agent_notes=(
+                "PARTIALLY BROKEN: The FP → SGD Gibbs equivalence is mathematically "
+                "valid and independent of A3 — it relies only on the structure of "
+                "stochastic dynamics. But the first step (branch evolution via Wick "
+                "rotation) invokes A3, which is falsified. The SGD analogy survives "
+                "as a mathematical fact about Fokker-Planck steady states, but the "
+                "claimed *physical* bridge from quantum branching is broken."
+            ),
+        ),
+        Derivation(
+            label="D4",
+            premises=["A1", "A6", "A9"],
+            conclusion="A9",
+            steps=[
+                DerivationStep(
+                    description=(
+                        "Quantum Darwinism (Zurek 2009): a pointer state becomes "
+                        "'objective' when N independent environment fragments each "
+                        "carry a copy of the system's state information."
+                    ),
+                    expression=r"R_\delta = \text{max } k \text{ s.t. } I(S:E_k) \geq (1-\delta) H(S)",
+                ),
+                DerivationStep(
+                    description=(
+                        "The encoding cost per pointer-state copy is "
+                        "I_i = S(ρ_{E_k|i}), the conditional von Neumann entropy "
+                        "of the environment fragment — determined by the "
+                        "Hamiltonian H_SE, not by Born probabilities."
+                    ),
+                    expression=r"I_i = S(\rho_{E_k|i}) = -\text{Tr}[\rho_{E_k|i} \log_2 \rho_{E_k|i}]",
+                ),
+                DerivationStep(
+                    description=(
+                        "By Landauer's principle (A6), creating each copy dissipates "
+                        "at least I_i × k_B T ln 2 of energy. Given available "
+                        "energy E_env, maximum redundancy is "
+                        "N_max,i = E_env / (I_i k_B T ln 2)."
+                    ),
+                    expression=r"N_{\max,i} = \frac{E_{\text{env}}}{I_i \cdot k_B T \ln 2}",
+                ),
+                DerivationStep(
+                    description=(
+                        "The information-selected probability P_i^info = (1/I_i) / "
+                        "Σ_j(1/I_j) is determined solely by relative "
+                        "Hamiltonian-determined encoding costs — energy and "
+                        "temperature cancel in the ratio."
+                    ),
+                    expression=r"P_i^{\text{info}} = \frac{1/I_i}{\sum_j 1/I_j}",
+                ),
+            ],
             verification_status=VerificationStatus.UNVERIFIED,
-            agent_notes="Establishes the NN-QM equivalence as the formal bridge for Simulation 2.",
+            agent_notes=(
+                "Phase A derivation (non-circular formulation). I_i is computed "
+                "as S(ρ_{E_k|i}) from the system-environment Hamiltonian, not "
+                "from Born probabilities. Uses only established results (Landauer "
+                "bound, Quantum Darwinism redundancy). Simulation 7 tests this "
+                "numerically with the non-circular I_i."
+            ),
         ),
     ]
 
@@ -243,13 +355,16 @@ def build_seed_theory() -> TheoryState:
             label="P1",
             derived_from=["D1"],
             statement=(
-                "Branch probabilities are temperature-dependent: |ψ|² statistics are "
-                "recovered exactly only in the zero-temperature (maximum coherence) limit, "
-                "with measurable deviations at finite temperature scaling as exp(−S_E/k_BT). "
-                "No other Born rule derivation makes this temperature-dependent prediction."
+                "UNDERMINED. Branch probabilities are temperature-dependent: |ψ|² "
+                "statistics are recovered exactly only in the zero-temperature (maximum "
+                "coherence) limit, with measurable deviations at finite temperature "
+                "scaling as exp(−S_E/k_BT). This prediction's derivation (D1) depends "
+                "on falsified A3; the specific mechanism proposed (Gibbs weighting over "
+                "Euclidean actions) is no longer viable."
             ),
             quantitative_formula=(
                 r"\Delta P \sim e^{-S_E / k_B T} - |\psi|^2"
+                r"\quad\textbf{[UNDERMINED — D1 broken]}"
             ),
             testable=True,
             experimental_design=(
@@ -261,21 +376,25 @@ def build_seed_theory() -> TheoryState:
                 "Standard MWI predicts temperature-independent Born rule statistics. "
                 "Carroll/Sebens, Deutsch/Wallace, Zurek envariance, and Saunders branch "
                 "counting make no temperature-dependent prediction. Any observed "
-                "temperature dependence is evidence for thermodynamic weighting."
+                "temperature dependence is evidence for thermodynamic weighting. "
+                "NOTE: The derivation path for this prediction is broken."
             ),
         ),
         Prediction(
             label="P2",
             derived_from=["D2"],
             statement=(
-                "Physical laws that survive across cosmic time are those with the best "
-                "free-energy balance (not lowest energy), analogous to SGD converging "
-                "to wide flat minima rather than the global minimum."
+                "UNDERMINED. Physical laws that survive across cosmic time are those "
+                "with the best free-energy balance (not lowest energy), analogous to "
+                "SGD converging to wide flat minima rather than the global minimum. "
+                "This prediction's derivation (D2) depends on falsified A3; the "
+                "free-energy selection mechanism has no surviving derivation path."
             ),
             testable=False,
             discriminating_power=(
                 "Distinguishes from pure anthropic reasoning: laws are selected for "
-                "thermodynamic efficiency, not merely observer-compatibility."
+                "thermodynamic efficiency, not merely observer-compatibility. "
+                "NOTE: The derivation path for this prediction is broken."
             ),
         ),
         Prediction(
@@ -300,6 +419,69 @@ def build_seed_theory() -> TheoryState:
                 "Clean discriminating signal: if weight distributions follow Gibbs "
                 "statistics at branch points, the formal equivalence is confirmed "
                 "experimentally."
+            ),
+        ),
+        Prediction(
+            label="P4",
+            derived_from=["D4"],
+            statement=(
+                "In systems where the environment has finite information capacity "
+                "(near the Bekenstein bound), the standard Quantum Darwinism "
+                "redundancy plateau should be modified. States requiring more bits "
+                "per pointer-state copy (higher I_i = S(ρ_{E_k|i})) should show "
+                "reduced redundancy compared to the Born-rule prediction. The "
+                "pointer-state statistics should interpolate between Born "
+                "(P_i = |ψ_i|²) and the information-budget prediction "
+                "(P_i^info ∝ 1/I_i) as the environment shrinks."
+            ),
+            quantitative_formula=(
+                r"P_i^{\text{info}} = \frac{1/I_i}{\sum_j 1/I_j}, \quad "
+                r"I_i = S(\rho_{E_k|i})"
+            ),
+            testable=True,
+            experimental_design=(
+                "Engineer a quantum system (e.g., transmon qubit) coupled to a "
+                "small, controlled environment (few ancilla qubits). Measure "
+                "pointer-state redundancy R_δ as a function of environment size. "
+                "Compare the redundancy ranking with Born probabilities and with "
+                "the Hamiltonian-determined information-budget prediction."
+            ),
+            discriminating_power=(
+                "Born rule predicts redundancy proportional to |ψ_i|². Information "
+                "budget predicts redundancy proportional to 1/I_i where I_i is the "
+                "Hamiltonian-determined encoding cost S(ρ_{E_k|i}). These are "
+                "independent quantities — one from state amplitudes, one from the "
+                "coupling structure. Discrepancy depends on the specific H_SE."
+            ),
+        ),
+        Prediction(
+            label="P5",
+            derived_from=["D4"],
+            statement=(
+                "The Landauer cost of pointer-state creation sets a minimum "
+                "decoherence energy scale. Below this energy, branching is "
+                "thermodynamically forbidden: the environment cannot create even "
+                "one copy of the pointer-state record. This predicts a sharp "
+                "energy threshold for the quantum-to-classical transition at "
+                "E_threshold = I_state × k_B T ln 2."
+            ),
+            quantitative_formula=(
+                r"E_{\text{threshold}} = I_s \cdot k_B T \ln 2"
+            ),
+            testable=True,
+            experimental_design=(
+                "Cool a mesoscopic quantum system to progressively lower "
+                "temperatures while monitoring decoherence rates and pointer-state "
+                "formation. The prediction is a threshold below which the "
+                "environment lacks the energy to create pointer-state records, "
+                "manifesting as anomalously slow decoherence."
+            ),
+            discriminating_power=(
+                "Standard decoherence theory predicts a smooth temperature "
+                "dependence (Γ ∝ T for ohmic baths). This prediction adds a "
+                "sharp cutoff from the Landauer bound — a qualitatively different "
+                "feature that would be unambiguous evidence for information-theoretic "
+                "constraints on the quantum-to-classical transition."
             ),
         ),
     ]
@@ -328,7 +510,11 @@ def build_seed_theory() -> TheoryState:
                 "is the key point to audit: does equating the squared Euclidean amplitude "
                 "with |ψ|² presuppose the Born rule?"
             ),
-            resolution_status=ResolutionStatus.OPEN,
+            resolution_status=ResolutionStatus.ADDRESSED,
+            resolution_notes=(
+                "Superseded: D1 is now broken for a more fundamental reason — its "
+                "premise A3 has been falsified. The circularity concern is moot."
+            ),
         ),
         Critique(
             target_label="A3",
@@ -340,7 +526,15 @@ def build_seed_theory() -> TheoryState:
                 "path integral as physically real (branches ARE Boltzmann-weighted) "
                 "rather than as a calculational tool requires additional justification."
             ),
-            resolution_status=ResolutionStatus.OPEN,
+            resolution_status=ResolutionStatus.RESOLVED,
+            resolution_notes=(
+                "Resolved by falsification. The Feynman-Vernon influence functional "
+                "shows that decoherence depends on path differences Δ(t) = x(t) − x'(t) "
+                "and bath correlation C(t), NOT on the Euclidean action S_E of individual "
+                "paths. Sim5 (Lindblad) confirmed that Markovian steady state = Gibbs(E) "
+                "to machine precision. Sim6 (HEOM) showed non-Markovian corrections point "
+                "AWAY from Gibbs(S_E) (negative direction cosine). A3 is definitively false."
+            ),
         ),
         Critique(
             target_label="P1",
@@ -352,12 +546,69 @@ def build_seed_theory() -> TheoryState:
                 "constraints exist and are tight, P1 may already be falsified or "
                 "pushed to unobservably small regimes."
             ),
+            resolution_status=ResolutionStatus.ADDRESSED,
+            resolution_notes=(
+                "P1 as originally stated (deviations scaling with exp(−S_E/k_BT)) is "
+                "undermined by the falsification of A3. The specific mechanism proposed "
+                "for temperature-dependent Born rule deviations is no longer viable."
+            ),
+        ),
+        Critique(
+            target_label="D1",
+            critique_type=CritiqueType.EMPIRICAL_CONFLICT,
+            severity=Severity.CRITICAL,
+            description=(
+                "D1 derives A5 from premises A1+A2+A3. Premise A3 has been falsified "
+                "by the Feynman-Vernon influence functional analysis and confirmed by "
+                "Sim5 (Lindblad) and Sim6 (HEOM). The derivation chain is broken: "
+                "one cannot derive the Born rule from a Gibbs distribution over "
+                "Euclidean actions because decoherence does not produce such a "
+                "distribution."
+            ),
             resolution_status=ResolutionStatus.OPEN,
+            resolution_notes=(
+                "A new derivation of the Born rule (or a revised prediction) is "
+                "needed. Phase A explores information-theoretic constraints as a "
+                "replacement mechanism."
+            ),
+        ),
+        Critique(
+            target_label="A5",
+            critique_type=CritiqueType.LOGICAL_GAP,
+            severity=Severity.HIGH,
+            description=(
+                "With A3 falsified, A5 has no surviving derivation path. The claim "
+                "that the Born rule emerges as a thermodynamic consequence of "
+                "Euclidean-action weighting is unsupported. The Born rule's emergence "
+                "from within MWI remains an open question, now requiring a fundamentally "
+                "different mechanism."
+            ),
+            resolution_status=ResolutionStatus.OPEN,
+        ),
+        Critique(
+            target_label="A4",
+            critique_type=CritiqueType.LOGICAL_GAP,
+            severity=Severity.HIGH,
+            description=(
+                "A4 conflates established physics with a novel claim. Claims (a) "
+                "(unitary preserves DS) and (b) (dissipation breaks DS) are "
+                "restatements of Birkhoff's theorem, verified by Sim8. Claim (c) "
+                "(Jarzynski-violating branches are exponentially suppressed via "
+                "Gibbs(S_E) weighting) depends on the Euclidean action partition "
+                "function from falsified A3. The branch_suppression_theorem in "
+                "jarzynski.py explicitly uses exp(-S_E/hbar), which is invalid. "
+                "The suppression mechanism needs reformulation without A3."
+            ),
+            resolution_status=ResolutionStatus.OPEN,
+            resolution_notes=(
+                "Claims (a) and (b) confirmed by Sim8. Claim (c) requires a new "
+                "suppression mechanism not dependent on Euclidean action weighting."
+            ),
         ),
     ]
 
     return TheoryState(
-        version=1,
+        version=2,
         name="Thermodynamic Darwinism",
         axioms=axioms,
         derivations=derivations,

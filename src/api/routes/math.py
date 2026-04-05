@@ -17,7 +17,12 @@ def _latex(expr: sp.Expr) -> str:
 
 
 def _build_derivation_chain() -> list[dict]:
-    """Build the five-step derivation chain with LaTeX from the symbolic engine."""
+    """Build the derivation chain with LaTeX from the symbolic engine.
+
+    v2: Steps 1-5 are mathematically valid. Steps 6-8 assumed the now-falsified
+    A3 (Wick rotation). Step 9 presents the refutation. Steps 10+ present the
+    new Phase A direction (information-theoretic bounds).
+    """
     steps: list[dict] = []
 
     # --- Step 1: Path Integrals ---
@@ -225,16 +230,17 @@ def _build_derivation_chain() -> list[dict]:
     steps.append({
         "id": "wkb_semiclassical",
         "title": "WKB Derivation",
-        "subtitle": "Born rule derived, not assumed",
+        "subtitle": "Born rule from semiclassical limit [CAVEAT: assumed A3]",
         "description": (
             "In the semiclassical (WKB) regime, the tunneling wavefunction is "
             "ψ ~ exp(−S_E/ℏ) where S_E is the Euclidean action through the "
             "classically forbidden region. Therefore |ψ|² = exp(−2S_E/ℏ), "
             "which has the form of a Boltzmann weight at effective β = 2/ℏ. "
-            "Normalizing gives P_i = exp(−2S_{E,i}/ℏ)/Z — the Born rule as a "
-            "derived consequence of path integral weighting, not a postulate. "
-            "This derivation is exact in the semiclassical limit (S_E ≫ ℏ); "
-            "corrections of order ℏ/S_E arise beyond WKB."
+            "CAVEAT: This step implicitly assumes A3 — that the Euclidean action "
+            "is the physically relevant quantity for branch weighting. The WKB "
+            "amplitude relationship |ψ|² ∝ exp(−2S_E/ℏ) is mathematically "
+            "correct but does NOT imply that thermal baths weight states by S_E. "
+            "Sim5 and Sim6 show they weight by energy E instead."
         ),
         "equations": [
             {
@@ -260,17 +266,16 @@ def _build_derivation_chain() -> list[dict]:
     steps.append({
         "id": "temperature_prediction",
         "title": "Temperature Prediction",
-        "subtitle": "Testable deviation from Born rule",
+        "subtitle": "Proposed deviation from Born rule [UNDERMINED: A3 falsified]",
         "description": (
-            "At T > 0, thermal fluctuations reduce the effective inverse temperature. "
-            "The phenomenological ansatz f(T) = 1 + k_BT/(2ℏ) captures the leading "
-            "correction: at low T the Born rule holds exactly; at higher T the "
-            "distribution broadens. A first-principles derivation of f(T) requires "
-            "solving the open-system WKB problem (open problem). Standard QM predicts "
-            "the state changes (ρ thermalizes) but the rule |ψ|² is sacrosanct. "
-            "Here the rule itself is temperature-dependent. The difference ΔP is "
-            "the experimentally measurable residual — vanishingly small when S_E ≫ ℏ "
-            "(macroscopic systems) but potentially detectable in mesoscopic regimes."
+            "UNDERMINED BY PHASE B: This prediction assumed A3 (Wick rotation = "
+            "decoherence). The specific mechanism proposed — deviations scaling with "
+            "exp(−S_E/k_BT) — is no longer viable because decoherence does not "
+            "produce Euclidean-action-weighted distributions. "
+            "The phenomenological ansatz f(T) = 1 + k_BT/(2ℏ) was a placeholder. "
+            "A first-principles derivation via the influence functional (Step 9) "
+            "shows the actual steady state is Gibbs(E), not Gibbs(S_E). "
+            "The math below is preserved for historical reference."
         ),
         "equations": [
             {
@@ -304,15 +309,17 @@ def _build_derivation_chain() -> list[dict]:
     steps.append({
         "id": "jarzynski_suppression",
         "title": "Branch Suppression",
-        "subtitle": "Dissipative branches eliminated",
+        "subtitle": "Dissipative branches eliminated [CAVEAT: assumed A3]",
         "description": (
             "The Jarzynski equality ⟨exp(−βW)⟩ = exp(−βΔF) holds for any "
-            "process. Decoherent branching is double-stochastic (unitary + "
-            "partial trace), so it satisfies Jarzynski with W_diss = 0. "
-            "Dissipative branching requires W_diss > 0, increasing the total "
-            "Euclidean action by W_diss. Under Gibbs weighting, these branches "
-            "are suppressed by exp(−W_diss/ℏ) — exponentially punished for "
-            "thermodynamic waste. This converts axiom A4 into a theorem."
+            "process — this is mathematically rigorous. However, the claim "
+            "that dissipative branches are suppressed by exp(−W_diss/ℏ) "
+            "assumed Gibbs weighting over Euclidean actions (A3), which is "
+            "falsified. The Jarzynski equality itself survives and applies to "
+            "real thermodynamic processes, but the connection to branch selection "
+            "via Euclidean action is broken. The surviving content: dissipation "
+            "is energetically costly (second law), which constrains branching "
+            "via Landauer bounds (Phase A)."
         ),
         "equations": [
             {
@@ -338,10 +345,134 @@ def _build_derivation_chain() -> list[dict]:
         ],
     })
 
+    # --- Step 9: Influence Functional (Replaces Wick Rotation) ---
+    from src.math_engine.symbolic.influence_functional import (
+        drude_lorentz_spectral_density,
+        bath_correlation_function,
+        influence_functional_phase,
+        high_T_ohmic_limit,
+        mean_force_gibbs_state,
+    )
+
+    sd = drude_lorentz_spectral_density()
+    ht = high_T_ohmic_limit()
+    mfg = mean_force_gibbs_state()
+
+    steps.append({
+        "id": "influence_functional",
+        "title": "The Refutation",
+        "subtitle": "Influence functional falsifies A3",
+        "description": (
+            "The Feynman-Vernon influence functional is the correct, first-principles "
+            "description of how a thermal bath suppresses quantum paths. For a system "
+            "coupled to a Drude-Lorentz bath, the suppression factor depends on the "
+            "PATH DIFFERENCE Δ(t) = x(t) − x′(t) and the bath correlation C(t) — "
+            "NOT on the Euclidean action S_E of individual paths. "
+            "At high T, Γ = 2mγk_BT/ℏ² (no S_E dependence). "
+            "The dissipative part drives the system toward Gibbs(E), not Gibbs(S_E). "
+            "Sim5 (Lindblad): steady state = Gibbs(E) to machine precision. "
+            "Sim6 (HEOM): non-Markovian corrections point AWAY from Gibbs(S_E). "
+            "VERDICT: A3 is falsified. Decoherence ≠ Wick rotation."
+        ),
+        "equations": [
+            {
+                "label": "Drude-Lorentz spectral density",
+                "latex": sd["description"],
+            },
+            {
+                "label": "Influence functional phase",
+                "latex": (
+                    r"\Phi[x,x'] = \frac{1}{\hbar}\int_0^t\!\!ds\int_0^s\!\!ds'\,"
+                    r"\Delta(s)\!\left[C_{\mathrm{re}}(s\!-\!s')\Delta(s') "
+                    r"+ iC_{\mathrm{im}}(s\!-\!s')\Sigma(s')\right]"
+                ),
+            },
+            {
+                "label": "High-T decoherence rate (Caldeira-Leggett)",
+                "latex": ht["description"],
+            },
+            {
+                "label": "Mean-force Gibbs state (exact at any coupling)",
+                "latex": mfg["description"],
+            },
+            {
+                "label": "Weak coupling limit (confirmed by Sim5)",
+                "latex": mfg["weak_coupling_limit"],
+            },
+        ],
+    })
+
+    # --- Step 10: Landauer Bound on Pointer States (Phase A) ---
+    from src.math_engine.symbolic.landauer_bekenstein import (
+        landauer_erasure_cost,
+        pointer_state_redundancy_cost,
+        information_budget_selection,
+    )
+
+    lec = landauer_erasure_cost()
+    prc = pointer_state_redundancy_cost()
+    ibs = information_budget_selection()
+
+    steps.append({
+        "id": "landauer_pointer",
+        "title": "Landauer Bound on Pointer States",
+        "subtitle": "Phase A: information-theoretic selection (non-circular)",
+        "description": (
+            "With A3 falsified, the surviving foundation is information-theoretic. "
+            "Landauer's principle (1961): any irreversible computation dissipates "
+            "at least k_B T ln 2 per bit. Quantum Darwinism requires N redundant "
+            "copies of a pointer state, each carrying I_i bits. CRITICAL: I_i is "
+            "defined as S(ρ_{E_k|i}), the conditional von Neumann entropy of the "
+            "environment fragment — determined by the Hamiltonian H_SE, NOT by "
+            "Born probabilities. The previous definition I_i = -log₂(p_i) was "
+            "circular. Given energy budget E_env, maximum redundancy is "
+            "N_max = E_env / (I_i k_B T ln 2)."
+        ),
+        "equations": [
+            {"label": "Landauer minimum per bit", "latex": lec["latex_per_bit"]},
+            {"label": "Encoding cost (Hamiltonian-determined)",
+             "latex": ibs["latex_I_def"]},
+            {"label": "Total cost of N redundant copies", "latex": prc["latex_total"]},
+            {"label": "Maximum redundancy", "latex": prc["latex_Nmax"]},
+        ],
+    })
+
+    # --- Step 11: Information-Budget Selection (Phase A) ---
+    from src.math_engine.symbolic.landauer_bekenstein import (
+        bekenstein_bound,
+        compare_with_born,
+    )
+
+    bb = bekenstein_bound()
+    cwb = compare_with_born()
+
+    steps.append({
+        "id": "info_budget_selection",
+        "title": "Information-Budget Selection",
+        "subtitle": "Phase A: Bekenstein-limited branching (non-circular)",
+        "description": (
+            "The Bekenstein bound limits total information in any finite region: "
+            "S_max ≤ 2π k_B R E / (ℏc). Combined with Landauer costs, this bounds "
+            "the total number of pointer-state copies the environment can hold. "
+            "The information-selected probability P_i^info = (1/I_i) / Σ(1/I_j) "
+            "weights states inversely by their Hamiltonian-determined encoding "
+            "cost I_i = S(ρ_{E_k|i}). Energy and temperature cancel in the ratio. "
+            "This is genuinely independent of Born probabilities — the I_i come "
+            "from the coupling structure, not from |⟨i|ψ⟩|². Simulation 7 "
+            "computes I_i from the actual evolved density matrix."
+        ),
+        "equations": [
+            {"label": "Bekenstein bound", "latex": bb["latex_bound"]},
+            {"label": "Maximum information (bits)", "latex": bb["latex_bits"]},
+            {"label": "Information-budget selection", "latex": ibs["latex_P_info"]},
+            {"label": "Discrepancy with Born rule", "latex": cwb["latex_discrepancy"]},
+        ],
+    })
+
     return steps
 
 
 @router.get("/derivations")
 async def get_derivations():
-    """Return the eight-step derivation chain with LaTeX-rendered equations."""
+    """Return the derivation chain with LaTeX-rendered equations."""
     return {"steps": _build_derivation_chain()}

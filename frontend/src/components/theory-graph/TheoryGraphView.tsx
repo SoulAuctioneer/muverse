@@ -14,9 +14,11 @@ const STATUS_BADGES: Record<string, string> = {
   postulated: "badge-postulated",
   derived: "badge-derived",
   contested: "badge-contested",
+  falsified: "badge-critical",
   unverified: "badge-unverified",
   symbolically_verified: "badge-verified",
   numerically_confirmed: "badge-verified",
+  critiqued: "badge-critical",
   open: "badge-critical",
   resolved: "badge-derived",
 };
@@ -113,11 +115,19 @@ function FallbackView({ error }: { error: string }) {
   const staticNodes = [
     { id: "A1", type: "axiom", label: "A1 — Unitary Evolution" },
     { id: "A2", type: "axiom", label: "A2 — Finite Action" },
-    { id: "A3", type: "axiom", label: "A3 — Wick Rotation" },
-    { id: "A4", type: "axiom", label: "A4 — Jarzynski" },
-    { id: "A5", type: "axiom", label: "A5 — Born Rule" },
-    { id: "D1", type: "derivation", label: "D1 — Born from Gibbs" },
-    { id: "P1", type: "prediction", label: "P1 — Temp-Dependent Born" },
+    { id: "A3", type: "critique", label: "A3 — Wick Rotation (FALSIFIED)" },
+    { id: "A4", type: "critique", label: "A4 — Jarzynski (contested)" },
+    { id: "A5", type: "axiom", label: "A5 — Born Rule (contested)" },
+    { id: "A6", type: "derivation", label: "A6 — Landauer Cost (derived)" },
+    { id: "A7", type: "derivation", label: "A7 — SGD/Gibbs (derived)" },
+    { id: "A8", type: "critique", label: "A8 — Free Energy Selection (contested)" },
+    { id: "A9", type: "axiom", label: "A9 — Info-Bounded Redundancy" },
+    { id: "D1", type: "critique", label: "D1 — Born from Gibbs (broken)" },
+    { id: "D4", type: "derivation", label: "D4 — Info-Constrained Selection" },
+    { id: "P1", type: "prediction", label: "P1 — Temp-Dependent Born (undermined)" },
+    { id: "P2", type: "prediction", label: "P2 — Free-Energy Laws (undermined)" },
+    { id: "P4", type: "prediction", label: "P4 — Modified Redundancy" },
+    { id: "P5", type: "prediction", label: "P5 — Landauer Threshold" },
   ];
 
   return (

@@ -259,6 +259,9 @@ function SimChart({ simId, data }: { simId: string; data: SimResults }) {
   if (simId === "sim3") return <Sim3Chart data={data} />;
   if (simId === "sim4") return <Sim4Chart data={data} />;
   if (simId === "sim5") return <Sim5Chart data={data} />;
+  if (simId === "sim6") return <Sim6Chart data={data} />;
+  if (simId === "sim7") return <Sim7Chart data={data} />;
+  if (simId === "sim8") return <Sim8Chart data={data} />;
   return <pre className="text-xs">{JSON.stringify(data, null, 2)}</pre>;
 }
 
@@ -913,6 +916,549 @@ function Sim5Chart({ data }: { data: SimResults }) {
           <strong>Conclusion:</strong> Within the Born-Markov approximation (which the
           Lindblad equation assumes), standard QM wins decisively. The TD hypothesis
           would need non-Markovian dynamics or strong system-bath coupling to be viable.
+        </p>
+      </div>
+    </div>
+  );
+}
+
+function Sim6Chart({ data }: { data: SimResults }) {
+  const energies = data.energies as number[];
+  const wkbActions = data.wkb_actions as number[];
+  const couplings = data.coupling_strengths as number[];
+  const heomPops = data.heom_pops as number[][];
+  const gibbsEPops = data.gibbs_energy_pops as number[];
+  const gibbsSPops = data.gibbs_action_pops as number[];
+  const resHE = data.residual_heom_vs_gibbs_e as number[];
+  const resHS = data.residual_heom_vs_gibbs_s as number[];
+  const dirCos = data.direction_cosine as number[];
+  const bathTemp = data.bath_temp as number;
+
+  const [selCoupling, setSelCoupling] = useState(0);
+
+  if (!couplings || !heomPops) {
+    return <div className="text-sm text-[var(--text-secondary)]">No chart data available</div>;
+  }
+
+  const nLevels = energies?.length ?? 0;
+
+  const comparisonData = energies
+    ? energies.map((_, i) => ({
+        level: `|${i}⟩`,
+        "HEOM Steady State": heomPops[selCoupling]?.[i] ?? 0,
+        "Bare Gibbs(E)": gibbsEPops[i] ?? 0,
+        "Gibbs(S_E) — TD": gibbsSPops[i] ?? 0,
+      }))
+    : [];
+
+  const sweepData = couplings.map((lam, i) => ({
+    lambda: lam,
+    "HEOM vs Gibbs(E)": resHE[i],
+    "HEOM vs Gibbs(S_E)": resHS[i],
+  }));
+
+  const directionData = couplings.map((lam, i) => ({
+    lambda: lam,
+    "Direction cosine": dirCos[i],
+  }));
+
+  const meanDirCos = dirCos.reduce((a, b) => a + b, 0) / dirCos.length;
+  const maxDeviation = Math.max(...resHE);
+  const maxDevLam = couplings[resHE.indexOf(maxDeviation)];
+
+  return (
+    <div className="space-y-6">
+      <div className="p-4 rounded-lg border border-violet-800/30 bg-violet-900/10 text-sm">
+        <div className="font-semibold text-violet-400 mb-1">
+          Beyond Lindblad: Non-Markovian Dynamics
+        </div>
+        <p className="text-[var(--text-secondary)]">
+          Sim5 showed Lindblad (weak coupling) produces Gibbs(E). This simulation
+          uses the <strong>HEOM solver</strong> — numerically exact for a
+          Drude-Lorentz bath — to test what happens at <em>strong</em> coupling
+          where the Lindblad approximation breaks down. The steady state is the
+          mean-force Gibbs state, which deviates from bare Gibbs(E). The key
+          question: does the deviation point toward Gibbs(S_E)?
+        </p>
+      </div>
+
+      <div className="grid grid-cols-3 gap-3">
+        <MetricCard
+          label="Mean direction cosine"
+          value={meanDirCos.toFixed(3)}
+          accent={meanDirCos > 0.2 ? "#34d399" : meanDirCos < -0.2 ? "#f87171" : "#94a3b8"}
+        />
+        <MetricCard
+          label="Max ‖HEOM − Gibbs(E)‖"
+          value={maxDeviation.toFixed(4)}
+          accent="#c084fc"
+        />
+        <MetricCard
+          label="Max deviation at λ ="
+          value={maxDevLam.toFixed(2)}
+          accent="#f59e0b"
+        />
+      </div>
+
+      {/* Coupling strength selector + comparison chart */}
+      <div>
+        <div className="flex items-center gap-3 mb-3">
+          <h3 className="text-sm font-semibold">
+            Population Comparison at λ = {couplings[selCoupling]?.toFixed(2)}
+          </h3>
+          <input
+            type="range"
+            min={0}
+            max={couplings.length - 1}
+            value={selCoupling}
+            onChange={(e) => setSelCoupling(parseInt(e.target.value))}
+            className="flex-1 max-w-48"
+          />
+        </div>
+        <p className="text-xs text-[var(--text-secondary)] mb-4">
+          Purple = HEOM exact steady state. Blue = bare Gibbs(E). Orange = TD
+          prediction. Slide to increase coupling strength and observe how the
+          HEOM state deviates from Gibbs(E).
+        </p>
+        <ResponsiveContainer width="100%" height={300}>
+          <BarChart data={comparisonData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+            <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.06)" />
+            <XAxis dataKey="level" tick={{ fill: "#888", fontSize: 11 }} />
+            <YAxis
+              label={{ value: "Probability", angle: -90, position: "insideLeft", offset: -5, style: { fill: "#999", fontSize: 12 } }}
+              tick={{ fill: "#888", fontSize: 11 }}
+            />
+            <Tooltip
+              contentStyle={{ background: "#1e1e2e", border: "1px solid #333", borderRadius: 8 }}
+              formatter={fmtTooltip}
+            />
+            <Legend wrapperStyle={{ paddingTop: 16 }} />
+            <Bar dataKey="HEOM Steady State" fill="#c084fc" radius={[4, 4, 0, 0]} />
+            <Bar dataKey="Bare Gibbs(E)" fill="#4a9eff" radius={[4, 4, 0, 0]} />
+            <Bar dataKey="Gibbs(S_E) — TD" fill="#f59e0b" radius={[4, 4, 0, 0]} />
+          </BarChart>
+        </ResponsiveContainer>
+      </div>
+
+      {/* Residual sweep */}
+      <div>
+        <h3 className="text-sm font-semibold mb-3">
+          Residuals vs Coupling Strength
+        </h3>
+        <p className="text-xs text-[var(--text-secondary)] mb-4">
+          As coupling increases, the HEOM steady state deviates from Gibbs(E)
+          (purple line rises). But the deviation from Gibbs(S_E) (orange line)
+          also increases — the strong-coupling correction moves AWAY from the
+          TD prediction.
+        </p>
+        <ResponsiveContainer width="100%" height={280}>
+          <LineChart data={sweepData} margin={{ top: 5, right: 30, left: 20, bottom: 20 }}>
+            <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.06)" />
+            <XAxis
+              dataKey="lambda"
+              scale="log"
+              domain={["auto", "auto"]}
+              label={{ value: "Coupling strength λ", position: "insideBottom", offset: -10, style: { fill: "#999", fontSize: 12 } }}
+              tick={{ fill: "#888", fontSize: 11 }}
+            />
+            <YAxis
+              label={{ value: "‖Residual‖₂", angle: -90, position: "insideLeft", offset: -5, style: { fill: "#999", fontSize: 12 } }}
+              tick={{ fill: "#888", fontSize: 11 }}
+            />
+            <Tooltip
+              contentStyle={{ background: "#1e1e2e", border: "1px solid #333", borderRadius: 8 }}
+              labelStyle={{ color: "#ccc" }}
+              formatter={fmtTooltip}
+              labelFormatter={(label) => `λ = ${Number(label).toFixed(3)}`}
+            />
+            <Legend wrapperStyle={{ paddingTop: 16 }} />
+            <Line type="monotone" dataKey="HEOM vs Gibbs(E)" stroke="#c084fc" strokeWidth={2} dot />
+            <Line type="monotone" dataKey="HEOM vs Gibbs(S_E)" stroke="#f59e0b" strokeWidth={2} dot />
+          </LineChart>
+        </ResponsiveContainer>
+      </div>
+
+      {/* Direction cosine */}
+      <div>
+        <h3 className="text-sm font-semibold mb-3">
+          Direction Cosine: Does Strong Coupling Support TD?
+        </h3>
+        <p className="text-xs text-[var(--text-secondary)] mb-4">
+          cos(θ) measures whether the HEOM deviation from Gibbs(E) points toward
+          (+1) or away from (−1) the TD prediction. A value near 0 means the
+          deviation is orthogonal (unrelated to TD). Negative values mean the
+          strong-coupling correction opposes the TD hypothesis.
+        </p>
+        <ResponsiveContainer width="100%" height={250}>
+          <LineChart data={directionData} margin={{ top: 5, right: 30, left: 20, bottom: 20 }}>
+            <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.06)" />
+            <XAxis
+              dataKey="lambda"
+              scale="log"
+              domain={["auto", "auto"]}
+              label={{ value: "Coupling strength λ", position: "insideBottom", offset: -10, style: { fill: "#999", fontSize: 12 } }}
+              tick={{ fill: "#888", fontSize: 11 }}
+            />
+            <YAxis
+              domain={[-1, 1]}
+              label={{ value: "cos(θ)", angle: -90, position: "insideLeft", offset: -5, style: { fill: "#999", fontSize: 12 } }}
+              tick={{ fill: "#888", fontSize: 11 }}
+              ticks={[-1, -0.5, 0, 0.5, 1]}
+            />
+            <Tooltip
+              contentStyle={{ background: "#1e1e2e", border: "1px solid #333", borderRadius: 8 }}
+              labelStyle={{ color: "#ccc" }}
+              formatter={fmtTooltip}
+              labelFormatter={(label) => `λ = ${Number(label).toFixed(3)}`}
+            />
+            <Line type="monotone" dataKey="Direction cosine" stroke="#f87171" strokeWidth={2.5} dot />
+          </LineChart>
+        </ResponsiveContainer>
+      </div>
+
+      {/* Scientific verdict */}
+      <div className="p-4 rounded-lg border border-red-800/30 bg-red-900/10 text-sm space-y-2">
+        <div className="font-semibold text-red-400">Scientific Verdict</div>
+        <p className="text-[var(--text-secondary)]">
+          The HEOM steady state deviates from bare Gibbs(E) at strong coupling (max
+          deviation: {maxDeviation.toFixed(3)} at λ = {maxDevLam}). But the
+          direction cosine is <strong>{meanDirCos < -0.2 ? "consistently negative" :
+          meanDirCos > 0.2 ? "positive" : "near zero"}</strong> (mean = {meanDirCos.toFixed(3)}),
+          meaning the deviation {meanDirCos < -0.2 ? "moves AWAY from" :
+          meanDirCos > 0.2 ? "aligns with" : "is unrelated to"} the TD prediction.
+        </p>
+        <p className="text-[var(--text-secondary)]">
+          <strong>Conclusion:</strong> The influence functional formalism confirms that
+          bath-induced corrections to the steady state are controlled by the spectral
+          density J(ω) and coupling operator, not by WKB tunneling actions. The Wick
+          rotation analogy (Axiom A3) has no support from either Markovian or
+          non-Markovian dynamics.
+        </p>
+      </div>
+    </div>
+  );
+}
+
+function Sim7Chart({ data }: { data: SimResults }) {
+  const envSizes = (data.env_sizes as number[]) || [];
+  const bornProbs = (data.born_probs as number[]) || [];
+  const infoProbs = (data.info_probs as number[]) || [];
+  const klBorn = (data.kl_born_per_env as number[]) || [];
+  const klInfo = (data.kl_info_per_env as number[]) || [];
+  const landauerEff = (data.landauer_efficiency as number[]) || [];
+  const redundancy = (data.redundancy_per_env as number[]) || [];
+  const pointerBits = (data.pointer_info_bits as number[]) || [];
+
+  const klData = envSizes.map((sz, i) => ({
+    "Env size": sz,
+    "KL(obs || Born)": klBorn[i] || 0,
+    "KL(obs || Info)": klInfo[i] || 0,
+  }));
+
+  const effData = envSizes.map((sz, i) => ({
+    "Env size": sz,
+    "Landauer efficiency η": landauerEff[i] || 0,
+    "Redundancy": redundancy[i] || 0,
+  }));
+
+  const compLabels = bornProbs.map((_, i) => `State ${i}`);
+  const compData = compLabels.map((label, i) => ({
+    name: label,
+    "Born |ψ|²": bornProbs[i] || 0,
+    "Info 1/Iᵢ": infoProbs[i] || 0,
+    "Info bits Iᵢ": pointerBits[i] || 0,
+  }));
+
+  const maxKlBorn = Math.max(...klBorn.filter(Number.isFinite), 0);
+  const maxKlInfo = Math.max(...klInfo.filter(Number.isFinite), 0);
+  const meanEff = landauerEff.length > 0
+    ? landauerEff.reduce((a, b) => a + b, 0) / landauerEff.length : 0;
+
+  return (
+    <div className="space-y-6">
+      <div className="p-4 rounded-lg bg-[var(--bg-tertiary)] border border-[var(--border)] text-sm space-y-2">
+        <div className="font-semibold text-emerald-400">Phase A: Information-Theoretic Selection (Non-Circular)</div>
+        <p className="text-[var(--text-secondary)]">
+          Tests whether Landauer-cost constraints on pointer-state redundancy produce
+          selection effects distinguishable from the Born rule. A {(data.d_system as number) || 4}-level
+          system is coupled to environments of varying size. The info-budget prediction
+          P<sub>i</sub><sup>info</sup> = (1/I<sub>i</sub>) / &Sigma;(1/I<sub>j</sub>) weights
+          states by inverse Hamiltonian-determined encoding cost
+          I<sub>i</sub> = S(&rho;<sub>E<sub>k</sub>|i</sub>), computed from the actual
+          system-environment dynamics &mdash; no Born probabilities assumed.
+        </p>
+      </div>
+
+      <div className="grid grid-cols-3 gap-3">
+        <MetricCard label="Max KL(obs || Born)" value={maxKlBorn.toFixed(4)} accent="#4a9eff" />
+        <MetricCard label="Max KL(obs || Info)" value={maxKlInfo.toFixed(4)} accent="#34d399" />
+        <MetricCard label="Mean Landauer η" value={meanEff.toFixed(3)} accent="#f59e0b" />
+      </div>
+
+      {/* Born vs Info-Budget comparison */}
+      <div className="p-4 rounded-lg bg-[var(--bg-primary)] border border-[var(--border)]">
+        <h3 className="text-sm font-semibold mb-3">Probability Comparison: Born vs Info-Budget (Hamiltonian)</h3>
+        <ResponsiveContainer width="100%" height={250}>
+          <BarChart data={compData}>
+            <CartesianGrid strokeDasharray="3 3" stroke="#333" />
+            <XAxis dataKey="name" tick={{ fill: "#888", fontSize: 11 }} />
+            <YAxis tick={{ fill: "#888", fontSize: 11 }} />
+            <Tooltip
+              contentStyle={{ background: "#1e1e2e", border: "1px solid #333", borderRadius: 8 }}
+              labelStyle={{ color: "#ccc" }}
+              formatter={fmtTooltip}
+            />
+            <Legend wrapperStyle={{ fontSize: 12 }} />
+            <Bar dataKey="Born |ψ|²" fill="#4a9eff" />
+            <Bar dataKey="Info 1/Iᵢ" fill="#34d399" />
+          </BarChart>
+        </ResponsiveContainer>
+        <p className="text-xs text-[var(--text-secondary)] mt-2">
+          Born rule (blue) weights by |&psi;|&sup2;. Information budget (green) weights
+          inversely by I<sub>i</sub> = S(&rho;<sub>E|i</sub>), the Hamiltonian-determined
+          encoding cost &mdash; no Born probabilities assumed.
+        </p>
+      </div>
+
+      {/* KL divergence vs environment size */}
+      <div className="p-4 rounded-lg bg-[var(--bg-primary)] border border-[var(--border)]">
+        <h3 className="text-sm font-semibold mb-3">KL Divergence vs Environment Size</h3>
+        <ResponsiveContainer width="100%" height={250}>
+          <LineChart data={klData}>
+            <CartesianGrid strokeDasharray="3 3" stroke="#333" />
+            <XAxis
+              dataKey="Env size"
+              label={{ value: "n_env (qubits)", position: "insideBottom", offset: -5, style: { fill: "#999", fontSize: 12 } }}
+              tick={{ fill: "#888", fontSize: 11 }}
+            />
+            <YAxis tick={{ fill: "#888", fontSize: 11 }} />
+            <Tooltip
+              contentStyle={{ background: "#1e1e2e", border: "1px solid #333", borderRadius: 8 }}
+              labelStyle={{ color: "#ccc" }}
+              formatter={fmtTooltip}
+              labelFormatter={(label) => `n_env = ${label}`}
+            />
+            <Legend wrapperStyle={{ fontSize: 12 }} />
+            <Line type="monotone" dataKey="KL(obs || Born)" stroke="#4a9eff" strokeWidth={2} dot />
+            <Line type="monotone" dataKey="KL(obs || Info)" stroke="#34d399" strokeWidth={2} dot />
+          </LineChart>
+        </ResponsiveContainer>
+        <p className="text-xs text-[var(--text-secondary)] mt-2">
+          As the environment grows, observed pointer-state statistics should converge
+          to Born (blue → 0). For small environments, information constraints may
+          pull statistics toward the info-budget prediction (green lower than blue).
+        </p>
+      </div>
+
+      {/* Landauer efficiency */}
+      <div className="p-4 rounded-lg bg-[var(--bg-primary)] border border-[var(--border)]">
+        <h3 className="text-sm font-semibold mb-3">Landauer Efficiency &amp; Redundancy</h3>
+        <ResponsiveContainer width="100%" height={250}>
+          <LineChart data={effData}>
+            <CartesianGrid strokeDasharray="3 3" stroke="#333" />
+            <XAxis
+              dataKey="Env size"
+              label={{ value: "n_env (qubits)", position: "insideBottom", offset: -5, style: { fill: "#999", fontSize: 12 } }}
+              tick={{ fill: "#888", fontSize: 11 }}
+            />
+            <YAxis tick={{ fill: "#888", fontSize: 11 }} />
+            <Tooltip
+              contentStyle={{ background: "#1e1e2e", border: "1px solid #333", borderRadius: 8 }}
+              labelStyle={{ color: "#ccc" }}
+              formatter={fmtTooltip}
+              labelFormatter={(label) => `n_env = ${label}`}
+            />
+            <Legend wrapperStyle={{ fontSize: 12 }} />
+            <Line type="monotone" dataKey="Landauer efficiency η" stroke="#f59e0b" strokeWidth={2} dot />
+            <Line type="monotone" dataKey="Redundancy" stroke="#c084fc" strokeWidth={2} dot />
+          </LineChart>
+        </ResponsiveContainer>
+        <p className="text-xs text-[var(--text-secondary)] mt-2">
+          Landauer efficiency (yellow): ratio of minimum thermodynamic cost to actual
+          dissipation. When &eta; &rarr; 1, the Landauer bound is tight. Redundancy
+          (purple): number of environment fragments carrying the system state.
+        </p>
+      </div>
+
+      {/* Scientific verdict */}
+      <div className="p-4 rounded-lg border border-emerald-800/30 bg-emerald-900/10 text-sm space-y-2">
+        <div className="font-semibold text-emerald-400">Scientific Assessment</div>
+        <p className="text-[var(--text-secondary)]">
+          {meanEff > 0.8
+            ? "Landauer efficiency is high — information bounds are tight and genuinely constrain pointer selection in this regime."
+            : meanEff > 0.5
+            ? "Landauer efficiency is moderate — information bounds are relevant but not yet the dominant constraint."
+            : "Landauer efficiency is low — the system dissipates well above the Landauer minimum, so information bounds are not yet the binding constraint."}
+        </p>
+        <p className="text-[var(--text-secondary)]">
+          <strong>Key question:</strong> As the environment shrinks, do observed statistics
+          deviate from Born toward the Hamiltonian-determined info-budget prediction? If
+          KL(obs || Info) decreases while KL(obs || Born) increases at small n_env, this
+          would be evidence for information-theoretic selection. I<sub>i</sub> is now
+          computed from S(&rho;<sub>E|i</sub>) &mdash; no circularity.
+        </p>
+      </div>
+    </div>
+  );
+}
+
+function Sim8Chart({ data }: { data: SimResults }) {
+  const gammas = (data.dissipation_rates as number[]) || [];
+  const dsDist = (data.ds_distance as number[]) || [];
+  const jRatio = (data.jarzynski_ratio as number[]) || [];
+  const rowDev = (data.row_sum_dev as number[]) || [];
+  const colDev = (data.col_sum_dev as number[]) || [];
+  const a4Unitary = data.a4_verified_unitary as boolean;
+  const a4Broken = data.a4_broken_dissipative as boolean;
+
+  const dsData = gammas.map((g, i) => ({
+    gamma: g,
+    "DS distance": dsDist[i] || 0,
+    "Row-sum deviation": rowDev[i] || 0,
+    "Col-sum deviation": colDev[i] || 0,
+  }));
+
+  const jData = gammas.map((g, i) => ({
+    gamma: g,
+    "Jarzynski ratio": jRatio[i] || 0,
+  }));
+
+  const unitaryDS = dsDist.length > 0 ? dsDist[0] : NaN;
+  const maxDS = Math.max(...dsDist.filter(Number.isFinite), 0);
+  const unitaryJ = jRatio.length > 0 ? jRatio[0] : NaN;
+
+  return (
+    <div className="space-y-6">
+      <div className="p-4 rounded-lg border border-amber-800/30 bg-amber-900/10 text-sm">
+        <div className="font-semibold text-amber-400 mb-1">
+          Axiom A4: Jarzynski Double Stochasticity
+        </div>
+        <p className="text-[var(--text-secondary)]">
+          A4 claims: (a) unitary branching preserves double stochasticity, (b)
+          dissipative branching breaks it, (c) Jarzynski-violating branches are
+          suppressed. Claims (a) and (b) are established physics. Claim (c)
+          depends on falsified A3. This simulation sweeps dissipation rate
+          &gamma; from 0 (unitary) to large values to quantify the transition.
+        </p>
+      </div>
+
+      <div className="grid grid-cols-3 gap-3">
+        <MetricCard
+          label="Unitary DS distance"
+          value={unitaryDS < 0.001 ? "< 10\u207B\u00B3" : unitaryDS.toFixed(4)}
+          accent={unitaryDS < 0.01 ? "#34d399" : "#f87171"}
+        />
+        <MetricCard
+          label="Max DS distance"
+          value={maxDS.toFixed(4)}
+          accent="#f59e0b"
+        />
+        <MetricCard
+          label="Unitary Jarzynski"
+          value={unitaryJ.toFixed(4)}
+          accent={Math.abs(unitaryJ - 1.0) < 0.01 ? "#34d399" : "#f87171"}
+        />
+      </div>
+
+      <div className="p-4 rounded-lg bg-[var(--bg-primary)] border border-[var(--border)]">
+        <h3 className="text-sm font-semibold mb-3">
+          Double Stochasticity Distance vs Dissipation Rate
+        </h3>
+        <ResponsiveContainer width="100%" height={300}>
+          <LineChart data={dsData} margin={{ top: 5, right: 30, left: 20, bottom: 20 }}>
+            <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.06)" />
+            <XAxis
+              dataKey="gamma"
+              label={{ value: "Dissipation rate \u03B3", position: "insideBottom", offset: -10, style: { fill: "#999", fontSize: 12 } }}
+              tick={{ fill: "#888", fontSize: 11 }}
+            />
+            <YAxis
+              label={{ value: "Distance", angle: -90, position: "insideLeft", offset: -5, style: { fill: "#999", fontSize: 12 } }}
+              tick={{ fill: "#888", fontSize: 11 }}
+            />
+            <Tooltip
+              contentStyle={{ background: "#1e1e2e", border: "1px solid #333", borderRadius: 8 }}
+              labelStyle={{ color: "#ccc" }}
+              formatter={fmtTooltip}
+              labelFormatter={(label) => `\u03B3 = ${label}`}
+            />
+            <Legend wrapperStyle={{ paddingTop: 16 }} />
+            <Line type="monotone" dataKey="DS distance" stroke="#f59e0b" strokeWidth={2.5} dot />
+            <Line type="monotone" dataKey="Row-sum deviation" stroke="#c084fc" strokeWidth={1.5} dot strokeDasharray="5 3" />
+            <Line type="monotone" dataKey="Col-sum deviation" stroke="#94a3b8" strokeWidth={1.5} dot strokeDasharray="5 3" />
+          </LineChart>
+        </ResponsiveContainer>
+        <p className="text-xs text-[var(--text-secondary)] mt-2">
+          At &gamma; = 0 (unitary), DS distance is near zero (doubly stochastic
+          by Birkhoff&apos;s theorem). As dissipation increases, row sums deviate
+          from 1 &mdash; probability flows preferentially toward the ground
+          state, breaking double stochasticity.
+        </p>
+      </div>
+
+      <div className="p-4 rounded-lg bg-[var(--bg-primary)] border border-[var(--border)]">
+        <h3 className="text-sm font-semibold mb-3">
+          Jarzynski Ratio vs Dissipation Rate
+        </h3>
+        <ResponsiveContainer width="100%" height={250}>
+          <LineChart data={jData} margin={{ top: 5, right: 30, left: 20, bottom: 20 }}>
+            <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.06)" />
+            <XAxis
+              dataKey="gamma"
+              label={{ value: "Dissipation rate \u03B3", position: "insideBottom", offset: -10, style: { fill: "#999", fontSize: 12 } }}
+              tick={{ fill: "#888", fontSize: 11 }}
+            />
+            <YAxis
+              domain={[0, "auto"]}
+              label={{ value: "\u27E8e^{\u2212\u03B2W}\u27E9", angle: -90, position: "insideLeft", offset: -5, style: { fill: "#999", fontSize: 12 } }}
+              tick={{ fill: "#888", fontSize: 11 }}
+            />
+            <Tooltip
+              contentStyle={{ background: "#1e1e2e", border: "1px solid #333", borderRadius: 8 }}
+              labelStyle={{ color: "#ccc" }}
+              formatter={fmtTooltip}
+              labelFormatter={(label) => `\u03B3 = ${label}`}
+            />
+            <Line type="monotone" dataKey="Jarzynski ratio" stroke="#4a9eff" strokeWidth={2.5} dot />
+          </LineChart>
+        </ResponsiveContainer>
+        <p className="text-xs text-[var(--text-secondary)] mt-2">
+          The Jarzynski equality predicts this ratio = 1.0 for doubly stochastic
+          processes. Deviation from 1.0 quantifies how strongly the Jarzynski
+          equality is violated by dissipation.
+        </p>
+      </div>
+
+      <div className={`p-4 rounded-lg border text-sm space-y-2 ${
+        a4Unitary && a4Broken
+          ? "border-emerald-800/30 bg-emerald-900/10"
+          : "border-amber-800/30 bg-amber-900/10"
+      }`}>
+        <div className={`font-semibold ${
+          a4Unitary && a4Broken ? "text-emerald-400" : "text-amber-400"
+        }`}>
+          Axiom A4 Verdict
+        </div>
+        <p className="text-[var(--text-secondary)]">
+          <strong>(a) Unitary preserves DS:</strong>{" "}
+          {a4Unitary ? "VERIFIED" : "NOT VERIFIED"} &mdash; DS distance at
+          &gamma;=0 is {unitaryDS < 0.01 ? "< 0.01" : unitaryDS.toFixed(4)}
+          {a4Unitary ? " (consistent with Birkhoff's theorem)" : ""}.
+        </p>
+        <p className="text-[var(--text-secondary)]">
+          <strong>(b) Dissipation breaks DS:</strong>{" "}
+          {a4Broken ? "VERIFIED" : "NOT VERIFIED"} &mdash; DS distance rises to{" "}
+          {maxDS.toFixed(4)} at max dissipation.
+        </p>
+        <p className="text-[var(--text-secondary)]">
+          <strong>(c) Suppression via Gibbs(S_E):</strong> UNTESTABLE &mdash;
+          this claim depends on the Euclidean action weighting from falsified A3.
+          The suppression mechanism needs reformulation.
+        </p>
+        <p className="text-[var(--text-secondary)]">
+          <strong>Overall:</strong> A4 is <em>partially verified</em>. Its
+          established claims (a) and (b) hold numerically. Its novel claim (c)
+          is broken along with A3. Status: CONTESTED.
         </p>
       </div>
     </div>

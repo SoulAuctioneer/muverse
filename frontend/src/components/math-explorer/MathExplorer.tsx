@@ -202,10 +202,12 @@ export default function MathExplorer() {
 
             {currentIdx === steps.length - 1 && (
               <div className="p-4 rounded-lg border border-dashed border-[var(--border)] text-center text-sm text-[var(--text-secondary)]">
-                    End of the derivation chain. Path integrals → Wick rotation →
-                    partition functions → Fokker-Planck → SGD → WKB derivation →
-                    temperature prediction → branch suppression. The Born rule
-                    is derived from WKB + thermodynamics, with testable deviations.
+                    End of the derivation chain. Steps 1-5 (path integrals → Wick
+                    rotation → partition functions → FP → SGD) are mathematically valid.
+                    Steps 6-8 assumed the now-falsified A3. Step 9 presents the refutation
+                    via the influence functional. Steps 10+ build the new Phase A direction:
+                    information-theoretic bounds (Landauer, Bekenstein) on pointer-state
+                    selection.
               </div>
             )}
           </div>

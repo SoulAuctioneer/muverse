@@ -121,6 +121,70 @@ def _run_sim(name: str, params: dict):
                 },
                 "error": None,
             }
+        elif name == "sim6":
+            from src.simulations.sim6_heom_nonmarkov import Sim6Config, run_simulation
+            config = Sim6Config(**{k: v for k, v in params.items() if hasattr(Sim6Config, k)})
+            result = run_simulation(config)
+            _sim_state[name] = {
+                "status": "completed",
+                "metrics": {
+                    "energies": result.energies.tolist(),
+                    "wkb_actions": result.wkb_actions.tolist(),
+                    "barrier_top": float(result.barrier_top),
+                    "coupling_strengths": result.coupling_strengths.tolist(),
+                    "heom_pops": result.heom_pops.tolist(),
+                    "gibbs_energy_pops": result.gibbs_energy_pops.tolist(),
+                    "gibbs_action_pops": result.gibbs_action_pops.tolist(),
+                    "residual_heom_vs_gibbs_e": result.residual_heom_vs_gibbs_e.tolist(),
+                    "residual_heom_vs_gibbs_s": result.residual_heom_vs_gibbs_s.tolist(),
+                    "direction_cosine": result.direction_cosine.tolist(),
+                    "bath_temp": result.bath_temp,
+                    "bath_cutoff": result.bath_cutoff,
+                },
+                "error": None,
+            }
+        elif name == "sim7":
+            from src.simulations.sim7_landauer_pointer import Sim7Config, run_simulation
+            config = Sim7Config(**{k: v for k, v in params.items() if hasattr(Sim7Config, k)})
+            result = run_simulation(config)
+            _sim_state[name] = {
+                "status": "completed",
+                "metrics": {
+                    "d_system": result.d_system,
+                    "env_sizes": result.env_sizes.tolist(),
+                    "born_probs": result.born_probs.tolist(),
+                    "info_probs": result.info_probs.tolist(),
+                    "redundancy_per_env": result.redundancy_per_env.tolist(),
+                    "mutual_info_per_env": result.mutual_info_per_env.tolist(),
+                    "kl_born_per_env": result.kl_born_per_env.tolist(),
+                    "kl_info_per_env": result.kl_info_per_env.tolist(),
+                    "landauer_efficiency": result.landauer_efficiency.tolist(),
+                    "landauer_min_cost": result.landauer_min_cost.tolist(),
+                    "actual_dissipation": result.actual_dissipation.tolist(),
+                    "pointer_info_bits": result.pointer_info_bits.tolist(),
+                    "temperature": result.temperature,
+                },
+                "error": None,
+            }
+        elif name == "sim8":
+            from src.simulations.sim8_jarzynski_test import Sim8Config, run_simulation
+            config = Sim8Config(**{k: v for k, v in params.items() if hasattr(Sim8Config, k)})
+            result = run_simulation(config)
+            _sim_state[name] = {
+                "status": "completed",
+                "metrics": {
+                    "dissipation_rates": result.dissipation_rates.tolist(),
+                    "ds_distance": result.ds_distance.tolist(),
+                    "jarzynski_ratio": result.jarzynski_ratio.tolist(),
+                    "row_sum_dev": result.row_sum_dev.tolist(),
+                    "col_sum_dev": result.col_sum_dev.tolist(),
+                    "a4_verified_unitary": result.a4_verified_unitary,
+                    "a4_broken_dissipative": result.a4_broken_dissipative,
+                    "temperature": result.temperature,
+                    "system_energies": result.system_energies.tolist(),
+                },
+                "error": None,
+            }
         else:
             _sim_state[name] = {"status": "failed", "metrics": {}, "error": f"Unknown simulation: {name}"}
 
@@ -214,6 +278,38 @@ async def list_simulations():
                 "barrier_height": {"default": 6.0, "type": "float", "label": "Barrier height"},
                 "well_separation": {"default": 1.8, "type": "float", "label": "Well separation"},
                 "asymmetry": {"default": 0.15, "type": "float", "label": "Asymmetry"},
+            },
+        },
+        "sim6": {
+            "name": "HEOM Non-Markovian Test (Beyond Lindblad)",
+            "description": "Tests TD at strong coupling using exact non-Markovian HEOM dynamics (influence functional)",
+            "configurable_params": {
+                "n_levels": {"default": 6, "type": "int", "label": "Energy levels"},
+                "bath_temp": {"default": 2.0, "type": "float", "label": "Bath temperature"},
+                "bath_cutoff": {"default": 2.0, "type": "float", "label": "Bath cutoff γ"},
+                "heom_depth": {"default": 5, "type": "int", "label": "HEOM depth"},
+            },
+        },
+        "sim7": {
+            "name": "Landauer Pointer-State Test (Phase A)",
+            "description": "Tests information-constrained pointer-state selection: Landauer cost vs Born rule vs info-budget prediction",
+            "configurable_params": {
+                "d_system": {"default": 4, "type": "int", "label": "System dimension"},
+                "coupling_strength": {"default": 0.3, "type": "float", "label": "Coupling strength"},
+                "temperature": {"default": 1.0, "type": "float", "label": "Temperature"},
+                "n_steps": {"default": 200, "type": "int", "label": "Time steps"},
+            },
+        },
+        "sim8": {
+            "name": "Jarzynski Double Stochasticity Test (A4)",
+            "description": "Tests whether unitary branching preserves double stochasticity and Jarzynski equality, and whether dissipation breaks it",
+            "configurable_params": {
+                "d_system": {"default": 4, "type": "int", "label": "System dimension"},
+                "n_env_qubits": {"default": 3, "type": "int", "label": "Bath qubits"},
+                "coupling_strength": {"default": 0.5, "type": "float", "label": "Coupling strength"},
+                "temperature": {"default": 1.0, "type": "float", "label": "Temperature"},
+                "t_final": {"default": 5.0, "type": "float", "label": "Evolution time"},
+                "n_time_steps": {"default": 300, "type": "int", "label": "Time steps"},
             },
         },
     }

@@ -2,9 +2,9 @@
 
 This module can be run standalone (without LLM API keys) to:
 1. Seed the theory from source documents
-2. Run all three simulations
+2. Run all eight simulations
 3. Generate figures from results
-4. Produce the initial LaTeX paper draft
+4. Produce the complete LaTeX paper draft
 5. Generate the BibTeX citations file
 
 For the full agentic pipeline (requiring LLM keys), use:
@@ -34,9 +34,13 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(mess
 OUTPUT_DIR = Path("output")
 
 
+# ---------------------------------------------------------------------------
+# Simulation runners
+# ---------------------------------------------------------------------------
+
 def run_all_simulations() -> dict:
-    """Run all three simulations and return their results."""
-    results = {}
+    """Run all eight simulations and return their results keyed by sim id."""
+    results: dict = {}
 
     logger.info("Running Simulation 1: Branch Ensemble under Boltzmann Constraint...")
     t0 = time.time()
@@ -60,32 +64,78 @@ def run_all_simulations() -> dict:
     results["sim3"] = sim3
     logger.info("  Sim 3 complete in %.1fs", time.time() - t0)
 
+    logger.info("Running Simulation 4: Born Rule Deviation Test...")
+    t0 = time.time()
+    from src.simulations.sim4_born_deviation import Sim4Config, run_simulation as run_sim4
+    sim4 = run_sim4(Sim4Config())
+    results["sim4"] = sim4
+    logger.info("  Sim 4 complete in %.1fs", time.time() - t0)
+
+    logger.info("Running Simulation 5: Lindblad Master Equation Test...")
+    t0 = time.time()
+    from src.simulations.sim5_lindblad_test import Sim5Config, run_simulation as run_sim5
+    sim5 = run_sim5(Sim5Config())
+    results["sim5"] = sim5
+    logger.info("  Sim 5 complete in %.1fs", time.time() - t0)
+
+    logger.info("Running Simulation 6: HEOM Non-Markovian Dynamics...")
+    t0 = time.time()
+    try:
+        from src.simulations.sim6_heom_nonmarkov import Sim6Config, run_simulation as run_sim6
+        sim6 = run_sim6(Sim6Config())
+        results["sim6"] = sim6
+        logger.info("  Sim 6 complete in %.1fs", time.time() - t0)
+    except Exception as exc:
+        logger.warning("  Sim 6 failed (may require QuTiP HEOM): %s", exc)
+
+    logger.info("Running Simulation 7: Landauer Pointer-State Test...")
+    t0 = time.time()
+    from src.simulations.sim7_landauer_pointer import Sim7Config, run_simulation as run_sim7
+    sim7 = run_sim7(Sim7Config())
+    results["sim7"] = sim7
+    logger.info("  Sim 7 complete in %.1fs", time.time() - t0)
+
+    logger.info("Running Simulation 8: Jarzynski Double-Stochasticity Test...")
+    t0 = time.time()
+    from src.simulations.sim8_jarzynski_test import Sim8Config, run_simulation as run_sim8
+    sim8 = run_sim8(Sim8Config())
+    results["sim8"] = sim8
+    logger.info("  Sim 8 complete in %.1fs — unitary DS verified: %s, dissipative DS broken: %s",
+                time.time() - t0, sim8.a4_verified_unitary, sim8.a4_broken_dissipative)
+
     return results
 
 
+# ---------------------------------------------------------------------------
+# Figure generation
+# ---------------------------------------------------------------------------
+
 def generate_figures(results: dict) -> list[str]:
-    """Generate all paper figures from simulation results."""
-    figures = []
+    """Generate publication-quality figures from simulation results."""
+    figures: list[str] = []
 
-    sim1 = results["sim1"]
-    figures.append(plot_sim1_kl_divergence(
-        sim1.betas, sim1.kl_unconstrained, sim1.kl_constrained,
-        sim1.kl_std_unconstrained, sim1.kl_std_constrained,
-    ))
-    logger.info("  Generated: %s", figures[-1])
+    sim1 = results.get("sim1")
+    if sim1 is not None:
+        figures.append(plot_sim1_kl_divergence(
+            sim1.betas, sim1.kl_unconstrained, sim1.kl_constrained,
+            sim1.kl_std_unconstrained, sim1.kl_std_constrained,
+        ))
+        logger.info("  Generated: %s", figures[-1])
 
-    sim2 = results["sim2"]
-    figures.append(plot_sim2_temperature_sweep(
-        sim2.temperatures, sim2.kl_from_born, sim2.kl_from_gibbs,
-    ))
-    logger.info("  Generated: %s", figures[-1])
+    sim2 = results.get("sim2")
+    if sim2 is not None:
+        figures.append(plot_sim2_temperature_sweep(
+            sim2.temperatures, sim2.kl_from_born, sim2.kl_from_gibbs,
+        ))
+        logger.info("  Generated: %s", figures[-1])
 
-    sim3 = results["sim3"]
-    figures.append(plot_sim3_populations(
-        sim3.temperatures, sim3.steady_state_pops,
-        sim3.gibbs_predictions, sim3.energies,
-    ))
-    logger.info("  Generated: %s", figures[-1])
+    sim3 = results.get("sim3")
+    if sim3 is not None:
+        figures.append(plot_sim3_populations(
+            sim3.temperatures, sim3.steady_state_pops,
+            sim3.gibbs_predictions, sim3.energies,
+        ))
+        logger.info("  Generated: %s", figures[-1])
 
     figures.append(plot_theory_chain())
     logger.info("  Generated: %s", figures[-1])
@@ -93,11 +143,15 @@ def generate_figures(results: dict) -> list[str]:
     return figures
 
 
-def generate_paper() -> str:
-    """Generate the LaTeX paper source."""
+# ---------------------------------------------------------------------------
+# Paper generation
+# ---------------------------------------------------------------------------
+
+def generate_paper(sim_results: dict | None = None) -> str:
+    """Generate the LaTeX paper source from current theory state and sim results."""
     theory = build_seed_theory()
     outline = create_default_outline()
-    return generate_full_paper(theory, outline)
+    return generate_full_paper(theory, outline, sim_results=sim_results)
 
 
 def generate_bibtex() -> str:
@@ -105,6 +159,10 @@ def generate_bibtex() -> str:
     citations = build_seed_citations()
     return citations_to_bibtex(citations)
 
+
+# ---------------------------------------------------------------------------
+# Full pipeline
+# ---------------------------------------------------------------------------
 
 def run_full_integration():
     """Execute the complete integration pipeline."""
@@ -122,6 +180,7 @@ def run_full_integration():
     logger.info("")
     logger.info("Step 2: Running simulations...")
     results = run_all_simulations()
+    logger.info("  %d simulations completed", len(results))
 
     logger.info("")
     logger.info("Step 3: Generating figures...")
@@ -130,7 +189,7 @@ def run_full_integration():
 
     logger.info("")
     logger.info("Step 4: Generating LaTeX paper...")
-    paper_tex = generate_paper()
+    paper_tex = generate_paper(sim_results=results)
     tex_path = OUTPUT_DIR / "thermodynamic_darwinism.tex"
     tex_path.write_text(paper_tex)
     logger.info("  Paper written to %s (%d chars)", tex_path, len(paper_tex))

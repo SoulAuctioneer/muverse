@@ -2,12 +2,16 @@
 
 A web-based, provider-agnostic agentic system for formalizing, testing, and critiquing
 the **Thermodynamic Darwinism** framework: the proposal that MWI branch persistence is
-governed by finite-energy thermodynamic constraints, with the Born rule emerging as a
-Gibbs/Boltzmann distribution rather than an axiom.
+governed by finite-resource thermodynamic constraints.
 
+**Current status (v2):** The original Wick-rotation mechanism (Axiom A3) has been
+**falsified** by influence functional analysis and numerical simulation (Lindblad + HEOM).
+The Born rule cannot emerge from a Gibbs distribution over Euclidean actions because
+decoherence does not produce such a distribution. The theory is being rebuilt on
+information-theoretic foundations: Landauer bounds on pointer-state creation, Bekenstein
+bounds on branching capacity, and information-constrained Quantum Darwinism.
 
-
-**IMPORTANT CAVEAT:** This is purely an experiment in developing such a framework and preenting a theory in an interactive and engaging way. I am not a mathematician or a physicist, and the science itself is currently little more than *speculative science fiction*.
+**IMPORTANT CAVEAT:** This is purely an experiment in developing such a framework and presenting a theory in an interactive and engaging way. I am not a mathematician or a physicist. The science itself is a rigorous *exploration* — including the honest documentation of negative results.
 
 ## Quick Start
 
@@ -46,6 +50,10 @@ cd frontend && pnpm install && pnpm dev
 1. **Branch Ensemble under Boltzmann Constraint** — discrete MWI branching with energy-weighted selection
 2. **Neural Network Analog Model** — SGD as a physical analog of branch selection under finite energy
 3. **Quantum Langevin Dynamics** — QuTiP-based quantum branching with tunable thermal bath
+4. **Born Rule Deviation Test (P1)** — distinguishes TD from standard QM predictions
+5. **Lindblad Master Equation Test** — exact Markovian steady state vs Gibbs(E) vs Gibbs(S_E) *[falsified A3]*
+6. **HEOM Non-Markovian Test** — exact non-Markovian dynamics via influence functional *[falsified A3]*
+7. **Landauer Pointer-State Test** — information-constrained pointer-state selection *[Phase A]*
 
 ## Paper Pipeline
 

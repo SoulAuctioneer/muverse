@@ -27,6 +27,7 @@ class AxiomStatus(str, Enum):
     POSTULATED = "postulated"
     DERIVED = "derived"
     CONTESTED = "contested"
+    FALSIFIED = "falsified"
 
 
 class VerificationStatus(str, Enum):

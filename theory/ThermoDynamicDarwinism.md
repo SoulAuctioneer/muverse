@@ -334,3 +334,48 @@ arXiv
 
 
 Claude is AI and can make mistakes. Please double-check cited sources.
+
+---
+
+## Phase B Results: Falsification of Axiom A3 (Wick Rotation)
+
+### Summary
+
+Axiom A3 — that decoherence physically implements a Wick rotation, mapping the MWI path integral to a Boltzmann partition function over Euclidean actions — has been falsified. The derivation chain D1 (A1+A2+A3 → A5, the Born rule) is broken.
+
+### Method: Feynman-Vernon Influence Functional
+
+The correct description of how a thermal bath suppresses quantum paths is the Feynman-Vernon influence functional, derived for the Caldeira-Leggett model (system linearly coupled to a bath of harmonic oscillators with Drude-Lorentz spectral density).
+
+The reduced density matrix acquires a suppression factor F = exp(−Φ/ℏ), where:
+
+    Φ[x,x'] = (1/ℏ) ∫₀ᵗ ds ∫₀ˢ ds' Δ(s) [C_re(s−s') Δ(s') + i C_im(s−s') Σ(s')]
+
+with Δ(s) = x(s) − x'(s) (path difference) and Σ(s) = x(s) + x'(s) (centre of mass).
+
+Key finding: Φ depends on the PATH DIFFERENCE Δ and the bath correlation C(t), NOT on the Euclidean action S_E of a single path. The "Wick rotation" axiom A3 conflates these fundamentally different quantities.
+
+At high temperature (Caldeira-Leggett limit): Γ_decoherence = 2mγk_BT/ℏ², proportional to friction × temperature, with no dependence on S_E.
+
+The dissipative part (Im Φ) produces friction that drives the system toward the Gibbs state exp(−βE)/Z — weighting by ENERGY, not by Euclidean action.
+
+### Numerical Confirmation
+
+**Simulation 5 (Lindblad Master Equation):** A double-well system coupled to a thermal bath via the Lindblad master equation. The steady-state populations match Gibbs(E) to machine precision (~10⁻¹⁵ residual), not Gibbs(S_E). The Markovian regime definitively produces energy-weighted thermalization, not action-weighted.
+
+**Simulation 6 (HEOM Non-Markovian Dynamics):** The same double-well system solved with the Hierarchical Equations of Motion (HEOM), which is numerically exact for the Drude-Lorentz bath. At strong coupling, the exact steady state (mean-force Gibbs state) does deviate from bare Gibbs(E), but the deviation points AWAY from Gibbs(S_E). The "direction cosine" metric — cos(θ) between (ρ_HEOM − ρ_Gibbs(E)) and (ρ_Gibbs(S_E) − ρ_Gibbs(E)) — is consistently negative, meaning the real physics moves in the opposite direction from the TD prediction.
+
+### Implications
+
+1. A3 is definitively false: decoherence ≠ Wick rotation.
+2. D1 (Born rule from Gibbs over Euclidean actions) is broken at its foundation.
+3. A5 (emergent Born rule) loses its derivation path and reverts to an open question.
+4. The surviving elements of the theory are: (a) the correct observation that branching has physical costs (A6, Landauer bound); (b) the mathematical SGD/Gibbs connection (valid independently of A3); (c) the intuition that finite resources constrain which branches persist.
+5. The path forward is Phase A: ground branch selection in information-theoretic constraints (Landauer bound per pointer state, Bekenstein bound on branching capacity) without assuming Euclidean-action weighting.
+
+### References (Phase B)
+
+- Feynman & Vernon, Ann. Phys. 24, 118 (1963)
+- Caldeira & Leggett, Ann. Phys. 149, 374 (1983)
+- Weiss, "Quantum Dissipative Systems" (World Scientific, 4th ed.)
+- QuTiP HEOM solver: Johansson et al., Comput. Phys. Commun. 184, 1234 (2013)

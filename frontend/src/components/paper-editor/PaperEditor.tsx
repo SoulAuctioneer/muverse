@@ -347,16 +347,16 @@ function renderLatexText(text: string): string {
 
 function buildFallbackOutline(): PaperOutline {
   return {
-    title: "Thermodynamic Darwinism: Born Rule as Emergent Gibbs Weighting",
+    title: "Thermodynamic Darwinism: A Selection Principle for Quantum Histories",
     sections: [
       { number: "1", title: "Introduction", status: "outline", outline_points: ["MWI context", "Born rule problem", "Motivation"], body_latex: "" },
-      { number: "2", title: "Background", status: "outline", outline_points: ["Quantum Darwinism", "Wick rotation", "FEP"], body_latex: "" },
-      { number: "3", title: "The Framework", status: "outline", outline_points: ["Axioms A1-A8"], body_latex: "" },
-      { number: "4", title: "Derivations", status: "outline", outline_points: ["D1-D3"], body_latex: "" },
-      { number: "5", title: "Predictions", status: "outline", outline_points: ["P1-P3"], body_latex: "" },
-      { number: "6", title: "Computational Results", status: "outline", outline_points: ["Simulations 1-3"], body_latex: "" },
-      { number: "7", title: "Discussion", status: "outline", outline_points: ["Limitations", "Open problems"], body_latex: "" },
-      { number: "8", title: "Conclusion", status: "outline", outline_points: ["Summary", "Future work"], body_latex: "" },
+      { number: "2", title: "Background", status: "outline", outline_points: ["Quantum Darwinism", "Wick rotation", "Influence functional"], body_latex: "" },
+      { number: "3", title: "The Framework", status: "outline", outline_points: ["Axioms A1-A8 (A3 falsified)"], body_latex: "" },
+      { number: "4", title: "Derivations", status: "outline", outline_points: ["D1-D3 (broken by A3 falsification)"], body_latex: "" },
+      { number: "5", title: "Initial Computational Results", status: "outline", outline_points: ["Simulations 1-3"], body_latex: "" },
+      { number: "6", title: "Negative Results: Falsification of A3", status: "outline", outline_points: ["Influence functional analysis", "Sim5 Lindblad", "Sim6 HEOM"], body_latex: "" },
+      { number: "7", title: "Discussion: What Survives", status: "outline", outline_points: ["Landauer bounds", "Bekenstein bounds", "SGD/Gibbs analogy"], body_latex: "" },
+      { number: "8", title: "Conclusion", status: "outline", outline_points: ["Partial falsification", "Information-theoretic direction"], body_latex: "" },
     ],
   };
 }

@@ -80,12 +80,20 @@ def double_stochasticity_condition() -> dict[str, sp.Expr]:
 def branch_suppression_theorem() -> dict[str, sp.Expr]:
     """Theorem: Dissipative branches are exponentially suppressed.
 
+    CAVEAT: This derivation depends on falsified A3. The Gibbs weighting
+    exp(-S_E/hbar) over Euclidean actions is not produced by decoherence
+    (shown by the influence functional analysis, Sim5, and Sim6). The
+    suppression factor exp(-W_diss/hbar) is formally correct within the
+    A3 framework but the framework itself is invalid. A new suppression
+    mechanism is needed.
+
     For a branch that requires dissipated work W_diss:
       1. Its total action increases: S_E → S_E + W_diss
       2. Its Gibbs weight decreases: exp(−S_E/ℏ) → exp(−(S_E + W_diss)/ℏ)
       3. Suppression factor: exp(−W_diss/ℏ)
 
     This converts A4 from an axiom to a derived consequence of A3 + thermodynamics.
+    A3 is now FALSIFIED, so this derivation is invalid as stated.
     """
     S_E = Symbol("S_E", positive=True)
     W_diss = Symbol("W_{diss}", positive=True)
